@@ -279,6 +279,7 @@ function calculateMarks() {
 }
 
 function createCertificateHTML(record) {
+  const schoolTitle = escapeHTML((record.schoolName || "").toUpperCase());
   const marksRows = record.subjectMarks
     .map(
       (item) => `
@@ -292,12 +293,12 @@ function createCertificateHTML(record) {
 
   return `
     <div class="certificate print-area" id="printable-${record.id}">
-      <div class="cert-watermark">${escapeHTML(record.schoolName)}</div>
-      <div class="cert-watermark wm-2">${escapeHTML(record.schoolName)}</div>
+      <div class="cert-watermark">${schoolTitle}</div>
+      <div class="cert-watermark wm-2">${schoolTitle}</div>
       <div class="cert-ribbon">Academic Session ${escapeHTML(record.session)}</div>
       <div class="cert-header">
         <p class="cert-kicker">Certified Academic Transcript</p>
-        <h2 class="cert-title">${escapeHTML(record.schoolName)}</h2>
+        <h2 class="cert-title">${schoolTitle}</h2>
         <p class="cert-sub">${escapeHTML(record.location)}</p>
         <p class="cert-sub">Principal: ${escapeHTML(record.principalName)} | School Mobile: ${escapeHTML(record.schoolMobile)}</p>
         <h3>Official Result-Certificate</h3>
@@ -306,6 +307,7 @@ function createCertificateHTML(record) {
       <div class="student-grid student-grid-card">
         <p><strong>Student Name:</strong> ${escapeHTML(record.studentName)}</p>
         <p><strong>Father's Name:</strong> ${escapeHTML(record.fatherName)}</p>
+        <p><strong>Mother's Name:</strong> ${escapeHTML(record.motherName)}</p>
         <p><strong>Class:</strong> ${escapeHTML(record.className)}</p>
         <p><strong>Roll Number:</strong> ${escapeHTML(record.rollNumber)}</p>
         <p><strong>Student Phone:</strong> ${escapeHTML(record.studentPhone || "N/A")}</p>
@@ -337,30 +339,15 @@ function createCertificateHTML(record) {
   `;
 }
 
-function downloadRecord(record) {
-  const fullDoc = `<!doctype html><html><head><meta charset="UTF-8"><title>${escapeHTML(
-    record.studentName
-  )} Result</title><link rel="stylesheet" href="styles.css"></head><body>${createCertificateHTML(record)}</body></html>`;
-  const blob = new Blob([fullDoc], { type: "text/html" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `${record.studentName.replace(/\s+/g, "_")}_result.html`;
-  link.click();
-  URL.revokeObjectURL(url);
-}
-
 function renderPreview(record) {
   els.resultPreview.classList.remove("hidden");
   els.resultPreview.innerHTML = `${createCertificateHTML(record)}
     <div class="result-actions">
       <button type="button" class="btn btn-primary" id="printBtn">Print</button>
-      <button type="button" class="btn btn-soft" id="downloadBtn">Download</button>
     </div>
   `;
 
   document.getElementById("printBtn").addEventListener("click", () => window.print());
-  document.getElementById("downloadBtn").addEventListener("click", () => downloadRecord(record));
 }
 
 function upsertRecord(record) {
@@ -387,7 +374,6 @@ function buildHistoryCard(record) {
       <div class="history-actions">
         <button class="btn btn-soft" data-action="preview" data-id="${record.id}">Preview</button>
         <button class="btn btn-primary" data-action="print" data-id="${record.id}">Print</button>
-        <button class="btn btn-ghost" data-action="download" data-id="${record.id}">Download</button>
       </div>
     </div>
   `;
@@ -442,14 +428,14 @@ function handleHistoryActions(event) {
     window.print();
   }
 
-  if (button.dataset.action === "download") {
-    downloadRecord(record);
-  }
 }
 
 function showDashboard() {
   document.getElementById("home").classList.add("hidden");
   document.getElementById("features").classList.add("hidden");
+  document.getElementById("showcase").classList.add("hidden");
+  document.getElementById("processSection").classList.add("hidden");
+  document.getElementById("mediaBandSection").classList.add("hidden");
   document.getElementById("authArea").classList.add("hidden");
   els.dashboard.classList.remove("hidden");
   renderProfile();
@@ -461,6 +447,9 @@ function showDashboard() {
 function showLanding() {
   document.getElementById("home").classList.remove("hidden");
   document.getElementById("features").classList.remove("hidden");
+  document.getElementById("showcase").classList.remove("hidden");
+  document.getElementById("processSection").classList.remove("hidden");
+  document.getElementById("mediaBandSection").classList.remove("hidden");
   document.getElementById("authArea").classList.remove("hidden");
   els.dashboard.classList.add("hidden");
 }
@@ -608,6 +597,7 @@ function initEvents() {
       schoolMobile: currentUser.schoolMobile,
       studentName: formData.studentName,
       fatherName: formData.fatherName,
+      motherName: formData.motherName,
       className: formData.className,
       rollNumber: formData.rollNumber,
       studentPhone: formData.studentPhone,
