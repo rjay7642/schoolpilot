@@ -1,0 +1,279 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SchoolPilot | Enterprise Result Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+
+  <header class="site-header" id="home">
+    <nav class="nav container glass-panel">
+      <div class="logo-wrap">
+        <img class="brand-logo" src="assets/logo.png" alt="SchoolPilot logo" />
+        <div>
+          <p class="logo">SchoolPilot</p>
+          <small>Certificate Intelligence Suite</small>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#authArea">Access</a>
+        <a href="#footer">Contact</a>
+      </div>
+      <div class="nav-actions">
+        <button class="btn btn-ghost" id="openLogin">Login</button>
+        <button class="btn btn-primary" id="openRegister">Register School</button>
+      </div>
+    </nav>
+
+    <section class="hero container">
+      <div class="hero-content reveal">
+        <p class="tag">Trusted by Modern Schools</p>
+        <h1>
+          Professional
+          <span class="gradient-text">Result + Certificate Portal</span>
+          for Large Institutions
+        </h1>
+        <p class="hero-copy">School-level branding, dynamic subject grading, printable marksheet-certificate, and searchable history. Everything runs safely in local storage without server setup.</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary" id="heroRegister">Create School Workspace</button>
+          <button class="btn btn-soft" id="heroLogin">Continue to Dashboard</button>
+        </div>
+      </div>
+      <div class="hero-media reveal">
+        <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80" alt="Students in a modern school" />
+        <div class="metric-card">
+          <strong>Premium Output</strong>
+          <p>Hybrid marksheet + certificate with instant print/download.</p>
+        </div>
+        <div class="floating-badge fb-1">AI Ready Reports</div>
+        <div class="floating-badge fb-2">Trusted Interface</div>
+      </div>
+    </section>
+    <section class="container trust-strip reveal">
+      <div class="trust-chip">Fast Setup</div>
+      <div class="trust-chip">No Backend</div>
+      <div class="trust-chip">Auto Calculation</div>
+      <div class="trust-chip">Print Ready Certificate</div>
+      <div class="trust-chip">Searchable History</div>
+    </section>
+    <section class="container landing-stats reveal">
+      <article class="landing-stat-card">
+        <p>Generated Certificates</p>
+        <h3 class="count-up" data-count="1250">0</h3>
+      </article>
+      <article class="landing-stat-card">
+        <p>Avg. Time per Result</p>
+        <h3><span class="count-up" data-count="18">0</span> sec</h3>
+      </article>
+      <article class="landing-stat-card">
+        <p>Setup Completion Rate</p>
+        <h3><span class="count-up" data-count="99">0</span>%</h3>
+      </article>
+      <article class="landing-stat-card">
+        <p>Records Search Accuracy</p>
+        <h3><span class="count-up" data-count="100">0</span>%</h3>
+      </article>
+    </section>
+  </header>
+
+  <section class="features container reveal" id="features">
+    <article class="feature-card glass-panel">
+      <h3>Institution Grade UI</h3>
+      <p>Enterprise look for senior school admin workflows.</p>
+    </article>
+    <article class="feature-card glass-panel">
+      <h3>Dynamic Subjects</h3>
+      <p>Select the required subjects and instantly open marks input fields.</p>
+    </article>
+    <article class="feature-card glass-panel">
+      <h3>Smart History</h3>
+      <p>Name/class/result filters ke saath quick retrieval.</p>
+    </article>
+  </section>
+
+  <section class="forms-wrap" id="authArea">
+    <div class="auth-card hidden" id="registerCard">
+      <h2>Register School Workspace</h2>
+      <form id="registerForm">
+        <div class="grid-2">
+          <label>School Name<input required name="schoolName" /></label>
+          <label>Admin Name<input required name="adminName" /></label>
+          <label>Phone Number<input required name="phone" type="tel" /></label>
+          <label>Location<input required name="location" /></label>
+          <label>Principal Name<input required name="principalName" /></label>
+          <label>School Mobile<input required name="schoolMobile" type="tel" /></label>
+          <label>Email ID<input required name="email" type="email" /></label>
+          <label>Password<input required name="password" type="password" minlength="6" /></label>
+          <label class="full">Password Hint<input required name="passwordHint" placeholder="Example: favorite city" /></label>
+        </div>
+        <button class="btn btn-primary full-btn" type="submit">Create Account</button>
+      </form>
+    </div>
+
+    <div class="auth-card hidden" id="loginCard">
+      <h2>Login to SchoolPilot</h2>
+      <form id="loginForm">
+        <label>Email ID<input required name="email" type="email" /></label>
+        <label>Password<input required name="password" type="password" /></label>
+        <button class="btn btn-primary full-btn" type="submit">Login</button>
+      </form>
+      <button class="link-btn" id="forgotPassBtn" type="button">Forgot Password?</button>
+      <p class="hint-text" id="hintText"></p>
+    </div>
+  </section>
+
+  <main id="dashboard" class="dashboard hidden">
+    <section class="dash-top container luxury-panel">
+      <div>
+        <p class="dash-label">School Workspace</p>
+        <h2 id="dashSchoolName">School Name</h2>
+        <p id="dashMeta">Location | Principal</p>
+      </div>
+      <div class="status-wrap">
+        <div class="status-pill">Status: Online</div>
+      </div>
+    </section>
+    <section class="container dash-stats">
+      <article class="stat-card">
+        <p>Total Generated</p>
+        <h4 id="dashTotalRecords">0</h4>
+      </article>
+      <article class="stat-card">
+        <p>Generated Today</p>
+        <h4 id="dashTodayRecords">0</h4>
+      </article>
+      <article class="stat-card">
+        <p>Workspace Type</p>
+        <h4>SchoolPilot Pro</h4>
+      </article>
+    </section>
+
+    <section class="container panel-tabs">
+      <button class="tab-btn active" data-tab="generateTab">Generate Certificate</button>
+      <button class="tab-btn" data-tab="historyTab">History</button>
+      <button class="tab-btn" data-tab="profileTab">School Profile</button>
+      <button class="tab-btn danger" id="logoutBtn">Logout</button>
+    </section>
+
+    <section class="container panel active" id="generateTab">
+      <h3>Student Result Details</h3>
+      <form id="certificateForm">
+        <div class="grid-3">
+          <label>Student Name<input required name="studentName" /></label>
+          <label>Father's Name<input required name="fatherName" /></label>
+          <label>Class<input required name="className" /></label>
+          <label>Roll Number<input required name="rollNumber" /></label>
+          <label>Student Phone (Optional)<input name="studentPhone" type="tel" /></label>
+          <label>Session<input required name="session" placeholder="2025-26" /></label>
+        </div>
+
+        <div class="grid-2 subject-config">
+          <label>Total Maximum Marks
+            <input id="totalMaxMarks" required name="totalMaxMarks" type="number" min="1" placeholder="Example: 500" />
+          </label>
+          <div>
+            <p class="field-title">Select Subjects (Checkbox)</p>
+            <div class="subject-toolbar">
+              <button type="button" class="btn btn-ghost btn-sm" id="selectAllSubjectsBtn">Select All</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="clearSubjectsBtn">Clear</button>
+            </div>
+            <div id="subjectCheckboxGrid" class="subject-checkbox-grid"></div>
+          </div>
+        </div>
+
+        <div class="subject-actions">
+          <p id="loadSubjectHint" class="load-subject-hint hidden">Load your subjects after selecting all required subjects.</p>
+          <button type="button" class="btn btn-soft" id="loadSubjectsBtn">Load Selected Subjects</button>
+          <p id="selectedSubjectsText">No subjects selected yet.</p>
+        </div>
+
+        <h4>Subject Marks</h4>
+        <div id="dynamicSubjectInputs" class="grid-3 marks-grid"></div>
+
+        <div class="calc-row">
+          <p>Obtained Marks: <strong id="totalMarks">0</strong></p>
+          <p>Percentage: <strong id="percentage">0%</strong></p>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Generate Result Certificate</button>
+      </form>
+
+      <section id="resultPreview" class="result-preview hidden"></section>
+    </section>
+
+    <section class="container panel" id="historyTab">
+      <div class="history-head">
+        <h3>Generated History</h3>
+        <div class="history-filters">
+          <input id="historySearch" placeholder="Search by student name..." />
+          <select id="classFilter">
+            <option value="">All Classes</option>
+          </select>
+          <select id="resultFilter">
+            <option value="">All Results</option>
+            <option value="PASS">PASS</option>
+            <option value="FAIL">FAIL</option>
+          </select>
+        </div>
+      </div>
+      <div id="historyList" class="history-list"></div>
+    </section>
+
+    <section class="container panel" id="profileTab">
+      <h3>School Profile</h3>
+      <div id="profileCard" class="profile-card"></div>
+      <div class="profile-actions">
+        <button class="btn btn-soft" type="button" id="editProfileBtn">Edit Profile</button>
+        <button class="btn tab-btn danger" type="button" id="deleteProfileBtn">Delete Profile</button>
+      </div>
+      <form id="profileEditForm" class="profile-edit-form hidden">
+        <div class="grid-2">
+          <label>School Name<input required name="schoolName" /></label>
+          <label>Admin Name<input required name="adminName" /></label>
+          <label>Phone Number<input required name="phone" type="tel" /></label>
+          <label>Location<input required name="location" /></label>
+          <label>Principal Name<input required name="principalName" /></label>
+          <label>School Mobile<input required name="schoolMobile" type="tel" /></label>
+          <label class="full">Password Hint<input required name="passwordHint" /></label>
+        </div>
+        <div class="profile-actions">
+          <button class="btn btn-primary" type="submit">Save Profile</button>
+          <button class="btn btn-ghost" type="button" id="cancelProfileEditBtn">Cancel</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img class="footer-logo" src="assets/logo.png" alt="SchoolPilot logo" />
+        <div>
+          <p class="footer-title">SchoolPilot</p>
+          <p class="footer-sub">Professional Result Operations Platform</p>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="#home">Home</a>
+        <a href="#features">Features</a>
+        <a href="#authArea">Register / Login</a>
+      </div>
+      <div class="footer-credit">
+        <p>Local First | Fast | Secure Browser Storage</p>
+        <p>Contact: <a href="mailto:rjay7642@gmail.com">rjay7642@gmail.com</a></p>
+        <p>Designed and Developed by Jay Singh</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
