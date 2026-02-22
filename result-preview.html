@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Result Preview | SchoolPilot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="preview-page">
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+
+  <main class="container preview-shell">
+    <section class="panel preview-panel active">
+      <div class="preview-topbar">
+        <a href="index.html" class="btn btn-ghost">Back to Dashboard</a>
+        <div class="result-actions">
+          <button type="button" class="btn btn-soft" id="openDashboardBtn">Open Dashboard</button>
+          <button type="button" class="btn btn-primary" id="printBtn">Print</button>
+        </div>
+      </div>
+      <section id="previewContent" class="result-preview"></section>
+      <p id="previewError" class="preview-error hidden"></p>
+    </section>
+  </main>
+
+  <script src="result-preview.js"></script>
+</body>
+</html>

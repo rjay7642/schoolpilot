@@ -39,7 +39,6 @@ const els = {
   certificateForm: document.getElementById("certificateForm"),
   totalMarks: document.getElementById("totalMarks"),
   percentage: document.getElementById("percentage"),
-  resultPreview: document.getElementById("resultPreview"),
   historyList: document.getElementById("historyList"),
   historySearch: document.getElementById("historySearch"),
   classFilter: document.getElementById("classFilter"),
@@ -55,6 +54,7 @@ const els = {
   dashTotalRecords: document.getElementById("dashTotalRecords"),
   dashTodayRecords: document.getElementById("dashTodayRecords"),
   editProfileBtn: document.getElementById("editProfileBtn"),
+  resetStorageBtn: document.getElementById("resetStorageBtn"),
   deleteProfileBtn: document.getElementById("deleteProfileBtn"),
   profileEditForm: document.getElementById("profileEditForm"),
   cancelProfileEditBtn: document.getElementById("cancelProfileEditBtn")
@@ -315,85 +315,14 @@ function calculateMarks() {
   };
 }
 
-function createCertificateHTML(record) {
-  const schoolTitle = escapeHTML((record.schoolName || "").toUpperCase());
-  const logoSource = record.schoolLogo || currentUser?.schoolLogo || "";
-  const logoHTML = logoSource
-    ? `<img class="cert-school-logo" src="${escapeHTML(logoSource)}" alt="School logo" />`
-    : "";
-  const marksRows = record.subjectMarks
-    .map(
-      (item) => `
-      <tr>
-        <td>${escapeHTML(item.subject)}</td>
-        <td>${Number(item.marks).toFixed(2).replace(/\.00$/, "")}</td>
-      </tr>
-    `
-    )
-    .join("");
-
-  return `
-    <div class="certificate print-area" id="printable-${record.id}">
-      <div class="cert-watermark">${schoolTitle}</div>
-      <div class="cert-watermark wm-2">${schoolTitle}</div>
-      <div class="cert-ribbon">Academic Session ${escapeHTML(record.session)}</div>
-      <div class="cert-header">
-        <div class="cert-branding">
-          ${logoHTML}
-          <div>
-            <p class="cert-kicker">Certified Academic Transcript</p>
-            <h2 class="cert-title">${schoolTitle}</h2>
-          </div>
-        </div>
-        <p class="cert-sub">${escapeHTML(record.location)}</p>
-        <p class="cert-sub">Principal: ${escapeHTML(record.principalName)} | School Mobile: ${escapeHTML(record.schoolMobile)}</p>
-        <h3>Official Result-Certificate</h3>
-      </div>
-
-      <div class="student-grid student-grid-card">
-        <p><strong>Student Name:</strong> ${escapeHTML(record.studentName)}</p>
-        <p><strong>Father's Name:</strong> ${escapeHTML(record.fatherName)}</p>
-        <p><strong>Mother's Name:</strong> ${escapeHTML(record.motherName)}</p>
-        <p><strong>Class:</strong> ${escapeHTML(record.className)}</p>
-        <p><strong>Roll Number:</strong> ${escapeHTML(record.rollNumber)}</p>
-        <p><strong>Student Phone:</strong> ${escapeHTML(record.studentPhone || "N/A")}</p>
-        <p><strong>Session:</strong> ${escapeHTML(record.session)}</p>
-      </div>
-
-      <table class="marks-table">
-        <thead>
-          <tr><th>Subject</th><th>Obtained Marks</th></tr>
-        </thead>
-        <tbody>
-          ${marksRows}
-        </tbody>
-      </table>
-
-      <div class="summary-strip">
-        <p><strong>Total Max</strong><br>${Number(record.totalMax).toFixed(2).replace(/\.00$/, "")}</p>
-        <p><strong>Obtained</strong><br>${Number(record.obtained).toFixed(2).replace(/\.00$/, "")}</p>
-        <p><strong>Percentage</strong><br>${record.percent.toFixed(2)}%</p>
-        <p><strong>Grade</strong><br>${escapeHTML(record.grade)}</p>
-      </div>
-
-      <div class="cert-foot">
-        <p><strong>Result:</strong> <span class="result-pill ${record.result === "PASS" ? "pass" : "fail"}">${escapeHTML(record.result)}</span></p>
-        <p><strong>Date:</strong> ${new Date(record.createdAt).toLocaleDateString()}</p>
-        <p><strong>Signature:</strong> Principal</p>
-      </div>
-    </div>
-  `;
-}
-
-function renderPreview(record) {
-  els.resultPreview.classList.remove("hidden");
-  els.resultPreview.innerHTML = `${createCertificateHTML(record)}
-    <div class="result-actions">
-      <button type="button" class="btn btn-primary" id="printBtn">Print</button>
-    </div>
-  `;
-
-  document.getElementById("printBtn").addEventListener("click", () => window.print());
+function openPreviewPage(recordId, shouldPrint = false) {
+  const query = new URLSearchParams({ id: String(recordId) });
+  if (shouldPrint) query.set("print", "1");
+  const url = `result-preview.html?${query.toString()}`;
+  const popup = window.open(url, "_blank");
+  if (!popup) {
+    window.location.href = url;
+  }
 }
 
 function upsertRecord(record) {
@@ -464,14 +393,11 @@ function handleHistoryActions(event) {
   if (!record) return;
 
   if (button.dataset.action === "preview") {
-    setActiveTab("generateTab");
-    renderPreview(record);
+    openPreviewPage(record.id);
   }
 
   if (button.dataset.action === "print") {
-    setActiveTab("generateTab");
-    renderPreview(record);
-    window.print();
+    openPreviewPage(record.id, true);
   }
 
 }
@@ -663,8 +589,8 @@ function initEvents() {
 
     upsertRecord(record);
     renderDashboardStats();
-    renderPreview(record);
     renderHistory(els.historySearch.value || "", els.classFilter.value || "", els.resultFilter.value || "");
+    openPreviewPage(record.id);
     alert("Certificate generated and saved in history.");
   });
 
@@ -687,6 +613,25 @@ function initEvents() {
 
   els.cancelProfileEditBtn.addEventListener("click", () => {
     hideProfileEditForm();
+  });
+
+  els.resetStorageBtn.addEventListener("click", () => {
+    if (!currentUser) return;
+    const approved = window.confirm(
+      "Reset generated data? This will delete all generated result records for this school account."
+    );
+    if (!approved) return;
+
+    saveRecords(getRecords().filter((record) => record.ownerEmail !== currentUser.email));
+    clearSavedSubjects(currentUser.email);
+    resetGeneratorForm();
+    renderDashboardStats();
+    renderHistory("", "", "");
+    els.historySearch.value = "";
+    els.classFilter.value = "";
+    els.resultFilter.value = "";
+    setActiveTab("historyTab");
+    alert("Generated data reset successfully.");
   });
 
   els.profileEditForm.addEventListener("submit", async (event) => {
@@ -727,8 +672,6 @@ function initEvents() {
     showAuthCard("login");
     resetGeneratorForm();
     hideProfileEditForm();
-    els.resultPreview.classList.add("hidden");
-    els.resultPreview.innerHTML = "";
     alert("Profile deleted successfully.");
   });
 
@@ -749,8 +692,6 @@ function initEvents() {
     showAuthCard("login");
     resetGeneratorForm();
     hideProfileEditForm();
-    els.resultPreview.classList.add("hidden");
-    els.resultPreview.innerHTML = "";
   });
 }
 
