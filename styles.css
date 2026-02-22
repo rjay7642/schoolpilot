@@ -834,9 +834,27 @@ select {
   border-radius: 12px;
   margin-bottom: 16px;
   background:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.65), transparent 45%),
-    linear-gradient(130deg, #edf6ff, #deecff 45%, #d6f2ff);
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.72), transparent 45%),
+    linear-gradient(130deg, #edf6ff, #dff1ff 42%, #d6f5ff 70%, #e9f9ff);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+
+.cert-branding {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.cert-school-logo {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #b7d0ea;
+  box-shadow: 0 6px 12px rgba(11, 67, 115, 0.2);
+  flex-shrink: 0;
 }
 
 .cert-kicker {
@@ -898,21 +916,21 @@ select {
 }
 
 .marks-table th {
-  background: linear-gradient(120deg, #195b93, #2775b5);
+  background: linear-gradient(120deg, #1c5f9a, #2d7ec0, #2f8bb8);
   color: #fff;
 }
 
 .marks-table tbody tr:nth-child(odd) td {
-  background: #f7fbff;
+  background: #f8fcff;
 }
 
 .marks-table tbody tr:nth-child(even) td {
-  background: #edf5ff;
+  background: #eef8ff;
 }
 
 .summary-strip {
   margin-top: 12px;
-  background: linear-gradient(120deg, #e8f3ff, #e7f9ff);
+  background: linear-gradient(120deg, #e8f3ff, #e5f9ff, #eef7ff);
   border: 1px solid #bdd4ec;
   border-radius: 10px;
   display: grid;
@@ -955,15 +973,15 @@ select {
 }
 
 .result-pill.pass {
-  color: #0f6b3f;
-  background: #e7f8ef;
-  border: 1px solid #bde5cb;
+  color: #0b6a52;
+  background: linear-gradient(120deg, #dff9ef, #dcfff4);
+  border: 1px solid #afe9cf;
 }
 
 .result-pill.fail {
-  color: #a0142f;
-  background: #fdecef;
-  border: 1px solid #f3bcc8;
+  color: #9f1637;
+  background: linear-gradient(120deg, #ffe8ee, #ffeef6);
+  border: 1px solid #f5bfd0;
 }
 
 .history-head {
@@ -1011,6 +1029,19 @@ select {
   border: 1px solid #d0deee;
   border-radius: 10px;
   background: linear-gradient(180deg, #fbfdff, #f4f9ff);
+}
+
+.profile-logo-wrap {
+  margin-bottom: 6px;
+}
+
+.profile-logo {
+  width: 78px;
+  height: 78px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid #c9dbef;
+  box-shadow: 0 8px 16px rgba(12, 62, 104, 0.18);
 }
 
 .profile-actions {
@@ -1196,6 +1227,10 @@ select {
   .process-grid,
   .media-band {
     grid-template-columns: 1fr;
+  }
+
+  .cert-branding {
+    flex-direction: column;
   }
 }
 

@@ -124,6 +124,31 @@ function escapeHTML(value) {
     .replaceAll("'", "&#39;");
 }
 
+function fileToDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(new Error("Unable to read logo file."));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function readSchoolLogoFromForm(form, preserveIfEmpty = "") {
+  const fileInput = form.elements.schoolLogoFile;
+  const file = fileInput?.files?.[0];
+  if (!file) return preserveIfEmpty;
+  if (!file.type.startsWith("image/")) {
+    alert("Please upload a valid image file for school logo.");
+    return preserveIfEmpty;
+  }
+  try {
+    return await fileToDataURL(file);
+  } catch (error) {
+    alert("School logo could not be read. Please try another image.");
+    return preserveIfEmpty;
+  }
+}
+
 function showAuthCard(type) {
   els.registerCard.classList.toggle("hidden", type !== "register");
   els.loginCard.classList.toggle("hidden", type !== "login");
@@ -185,7 +210,12 @@ function renderProfile() {
   els.dashSchoolName.textContent = currentUser.schoolName;
   els.dashMeta.textContent = `${currentUser.location} | Principal: ${currentUser.principalName} | Mobile: ${currentUser.schoolMobile}`;
 
+  const profileLogo = currentUser.schoolLogo
+    ? `<div class="profile-logo-wrap"><img class="profile-logo" src="${escapeHTML(currentUser.schoolLogo)}" alt="School logo" /></div>`
+    : `<p><strong>School Logo:</strong> Not uploaded</p>`;
+
   els.profileCard.innerHTML = `
+    ${profileLogo}
     <p><strong>School Name:</strong> ${escapeHTML(currentUser.schoolName)}</p>
     <p><strong>Admin Name:</strong> ${escapeHTML(currentUser.adminName)}</p>
     <p><strong>Phone:</strong> ${escapeHTML(currentUser.phone)}</p>
@@ -203,6 +233,9 @@ function renderProfile() {
     els.profileEditForm.elements.principalName.value = currentUser.principalName || "";
     els.profileEditForm.elements.schoolMobile.value = currentUser.schoolMobile || "";
     els.profileEditForm.elements.passwordHint.value = currentUser.passwordHint || "";
+    if (els.profileEditForm.elements.schoolLogoFile) {
+      els.profileEditForm.elements.schoolLogoFile.value = "";
+    }
   }
 }
 
@@ -280,6 +313,10 @@ function calculateMarks() {
 
 function createCertificateHTML(record) {
   const schoolTitle = escapeHTML((record.schoolName || "").toUpperCase());
+  const logoSource = record.schoolLogo || currentUser?.schoolLogo || "";
+  const logoHTML = logoSource
+    ? `<img class="cert-school-logo" src="${escapeHTML(logoSource)}" alt="School logo" />`
+    : "";
   const marksRows = record.subjectMarks
     .map(
       (item) => `
@@ -297,8 +334,13 @@ function createCertificateHTML(record) {
       <div class="cert-watermark wm-2">${schoolTitle}</div>
       <div class="cert-ribbon">Academic Session ${escapeHTML(record.session)}</div>
       <div class="cert-header">
-        <p class="cert-kicker">Certified Academic Transcript</p>
-        <h2 class="cert-title">${schoolTitle}</h2>
+        <div class="cert-branding">
+          ${logoHTML}
+          <div>
+            <p class="cert-kicker">Certified Academic Transcript</p>
+            <h2 class="cert-title">${schoolTitle}</h2>
+          </div>
+        </div>
         <p class="cert-sub">${escapeHTML(record.location)}</p>
         <p class="cert-sub">Principal: ${escapeHTML(record.principalName)} | School Mobile: ${escapeHTML(record.schoolMobile)}</p>
         <h3>Official Result-Certificate</h3>
@@ -497,11 +539,14 @@ function hideProfileEditForm() {
 function initEvents() {
   bindTopButtons();
 
-  els.registerForm.addEventListener("submit", (event) => {
+  els.registerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const payload = Object.fromEntries(new FormData(event.target).entries());
+    const form = event.target;
+    const payload = Object.fromEntries(new FormData(form).entries());
+    payload.schoolLogo = await readSchoolLogoFromForm(form, "");
+    delete payload.schoolLogoFile;
     registerUser(payload);
-    event.target.reset();
+    form.reset();
   });
 
   els.loginForm.addEventListener("submit", (event) => {
@@ -595,6 +640,7 @@ function initEvents() {
       location: currentUser.location,
       principalName: currentUser.principalName,
       schoolMobile: currentUser.schoolMobile,
+      schoolLogo: currentUser.schoolLogo || "",
       studentName: formData.studentName,
       fatherName: formData.fatherName,
       motherName: formData.motherName,
@@ -639,11 +685,14 @@ function initEvents() {
     hideProfileEditForm();
   });
 
-  els.profileEditForm.addEventListener("submit", (event) => {
+  els.profileEditForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!currentUser) return;
 
-    const updates = Object.fromEntries(new FormData(event.target).entries());
+    const form = event.target;
+    const updates = Object.fromEntries(new FormData(form).entries());
+    updates.schoolLogo = await readSchoolLogoFromForm(form, currentUser.schoolLogo || "");
+    delete updates.schoolLogoFile;
     const users = getUsers();
     const idx = users.findIndex((u) => u.email === currentUser.email);
     if (idx < 0) return;
