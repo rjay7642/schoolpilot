@@ -34,6 +34,7 @@ const els = {
   hintText: document.getElementById("hintText"),
   dashSchoolName: document.getElementById("dashSchoolName"),
   dashMeta: document.getElementById("dashMeta"),
+  dashSchoolLogo: document.getElementById("dashSchoolLogo"),
   profileCard: document.getElementById("profileCard"),
   certificateForm: document.getElementById("certificateForm"),
   totalMarks: document.getElementById("totalMarks"),
@@ -209,6 +210,9 @@ function renderProfile() {
   if (!currentUser) return;
   els.dashSchoolName.textContent = currentUser.schoolName;
   els.dashMeta.textContent = `${currentUser.location} | Principal: ${currentUser.principalName} | Mobile: ${currentUser.schoolMobile}`;
+  if (els.dashSchoolLogo) {
+    els.dashSchoolLogo.src = currentUser.schoolLogo || "assets/logo.png";
+  }
 
   const profileLogo = currentUser.schoolLogo
     ? `<div class="profile-logo-wrap"><img class="profile-logo" src="${escapeHTML(currentUser.schoolLogo)}" alt="School logo" /></div>`
