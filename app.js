@@ -24,6 +24,14 @@ const SUBJECT_LIBRARY = [
   "Business Studies"
 ];
 
+const RESULT_TEMPLATES = [
+  { id: "template-1", name: "Royal Horizon", page: "result-template-1.html", swatch: "linear-gradient(130deg, #0f4f86, #2b8abd)" },
+  { id: "template-2", name: "Emerald Luxe", page: "result-template-2.html", swatch: "linear-gradient(130deg, #0a6247, #34a57a)" },
+  { id: "template-3", name: "Midnight Gold", page: "result-template-3.html", swatch: "linear-gradient(130deg, #1b2448, #b68a3b)" },
+  { id: "template-4", name: "Rose Quartz", page: "result-template-4.html", swatch: "linear-gradient(130deg, #7a3c52, #d48da5)" },
+  { id: "template-5", name: "Platinum Slate", page: "result-template-5.html", swatch: "linear-gradient(130deg, #2b3d52, #7b96b3)" }
+];
+
 const els = {
   registerCard: document.getElementById("registerCard"),
   loginCard: document.getElementById("loginCard"),
@@ -57,11 +65,15 @@ const els = {
   resetStorageBtn: document.getElementById("resetStorageBtn"),
   deleteProfileBtn: document.getElementById("deleteProfileBtn"),
   profileEditForm: document.getElementById("profileEditForm"),
-  cancelProfileEditBtn: document.getElementById("cancelProfileEditBtn")
+  cancelProfileEditBtn: document.getElementById("cancelProfileEditBtn"),
+  templatePickerModal: document.getElementById("templatePickerModal"),
+  templatePickerGrid: document.getElementById("templatePickerGrid"),
+  closeTemplatePickerBtn: document.getElementById("closeTemplatePickerBtn")
 };
 
 let currentUser = null;
 let selectedSubjects = [];
+let historyRenderVersion = 0;
 
 const parse = (key) => JSON.parse(localStorage.getItem(key) || "[]");
 const parseSession = () => JSON.parse(localStorage.getItem(STORAGE_KEYS.session) || "null");
@@ -214,19 +226,44 @@ function renderProfile() {
     els.dashSchoolLogo.src = currentUser.schoolLogo || "assets/logo.png";
   }
 
+  const schoolRecords = getRecords().filter((record) => record.ownerEmail === currentUser.email);
+  const totalRecords = schoolRecords.length;
+  const passRecords = schoolRecords.filter((record) => record.result === "PASS").length;
+  const passRate = totalRecords ? ((passRecords / totalRecords) * 100).toFixed(1) : "0.0";
+  const joinedOn = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString() : "N/A";
+  const profileInitials = (currentUser.schoolName || "SP")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
+
   const profileLogo = currentUser.schoolLogo
     ? `<div class="profile-logo-wrap"><img class="profile-logo" src="${escapeHTML(currentUser.schoolLogo)}" alt="School logo" /></div>`
-    : `<p><strong>School Logo:</strong> Not uploaded</p>`;
+    : `<div class="profile-logo-wrap"><div class="profile-logo profile-logo-fallback">${escapeHTML(profileInitials || "SP")}</div></div>`;
 
   els.profileCard.innerHTML = `
-    ${profileLogo}
-    <p><strong>School Name:</strong> ${escapeHTML(currentUser.schoolName)}</p>
-    <p><strong>Admin Name:</strong> ${escapeHTML(currentUser.adminName)}</p>
-    <p><strong>Phone:</strong> ${escapeHTML(currentUser.phone)}</p>
-    <p><strong>Location:</strong> ${escapeHTML(currentUser.location)}</p>
-    <p><strong>Principal:</strong> ${escapeHTML(currentUser.principalName)}</p>
-    <p><strong>School Mobile:</strong> ${escapeHTML(currentUser.schoolMobile)}</p>
-    <p><strong>Email:</strong> ${escapeHTML(currentUser.email)}</p>
+    <div class="profile-head">
+      ${profileLogo}
+      <div class="profile-identity">
+        <h4>${escapeHTML(currentUser.schoolName)}</h4>
+        <p>${escapeHTML(currentUser.location)} | Principal: ${escapeHTML(currentUser.principalName)}</p>
+        <div class="profile-badges">
+          <span class="profile-badge">Joined: ${escapeHTML(joinedOn)}</span>
+          <span class="profile-badge">Records: ${totalRecords}</span>
+          <span class="profile-badge">Pass Rate: ${passRate}%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-grid">
+      <div class="profile-item"><span>Admin Name</span><strong>${escapeHTML(currentUser.adminName)}</strong></div>
+      <div class="profile-item"><span>Email</span><strong>${escapeHTML(currentUser.email)}</strong></div>
+      <div class="profile-item"><span>Phone</span><strong>${escapeHTML(currentUser.phone)}</strong></div>
+      <div class="profile-item"><span>School Mobile</span><strong>${escapeHTML(currentUser.schoolMobile)}</strong></div>
+      <div class="profile-item"><span>Principal</span><strong>${escapeHTML(currentUser.principalName)}</strong></div>
+      <div class="profile-item"><span>Workspace</span><strong>SchoolPilot Pro</strong></div>
+    </div>
   `;
 
   if (els.profileEditForm) {
@@ -315,14 +352,54 @@ function calculateMarks() {
   };
 }
 
-function openPreviewPage(recordId, shouldPrint = false) {
+function getTemplateConfig(templateId) {
+  return RESULT_TEMPLATES.find((item) => item.id === templateId) || RESULT_TEMPLATES[0];
+}
+
+function setRecordTemplate(recordId, templateId) {
+  const records = getRecords();
+  const idx = records.findIndex((item) => item.id === recordId);
+  if (idx < 0) return;
+  records[idx].templateId = getTemplateConfig(templateId).id;
+  saveRecords(records);
+}
+
+function buildTemplatePickerCards(selectedTemplateId = RESULT_TEMPLATES[0].id) {
+  return RESULT_TEMPLATES.map((template) => {
+    const activeClass = template.id === selectedTemplateId ? "active" : "";
+    return `
+      <button type="button" class="template-option ${activeClass}" data-template-id="${template.id}">
+        <span class="template-swatch" style="background:${template.swatch};"></span>
+        <span class="template-copy">
+          <strong>${escapeHTML(template.name)}</strong>
+          <small>${escapeHTML(template.id.replace("template-", "Template "))}</small>
+        </span>
+      </button>
+    `;
+  }).join("");
+}
+
+function openTemplatePicker(recordId) {
+  const record = getRecords().find((item) => item.id === recordId);
+  if (!record || !els.templatePickerModal || !els.templatePickerGrid) return;
+  const selectedTemplateId = getTemplateConfig(record.templateId).id;
+  els.templatePickerModal.dataset.recordId = recordId;
+  els.templatePickerGrid.innerHTML = buildTemplatePickerCards(selectedTemplateId);
+  els.templatePickerModal.classList.remove("hidden");
+}
+
+function closeTemplatePicker() {
+  if (!els.templatePickerModal) return;
+  els.templatePickerModal.classList.add("hidden");
+  delete els.templatePickerModal.dataset.recordId;
+}
+
+function openPreviewPage(recordId, shouldPrint = false, templateId = RESULT_TEMPLATES[0].id) {
+  const template = getTemplateConfig(templateId);
   const query = new URLSearchParams({ id: String(recordId) });
   if (shouldPrint) query.set("print", "1");
-  const url = `result-preview.html?${query.toString()}`;
-  const popup = window.open(url, "_blank");
-  if (!popup) {
-    window.location.href = url;
-  }
+  const url = `${template.page}?${query.toString()}`;
+  window.location.href = url;
 }
 
 function upsertRecord(record) {
@@ -335,18 +412,56 @@ function renderDashboardStats() {
   const all = getRecords().filter((record) => record.ownerEmail === currentUser?.email);
   const today = new Date().toDateString();
   const todayCount = all.filter((record) => new Date(record.createdAt).toDateString() === today).length;
-  els.dashTotalRecords.textContent = String(all.length);
-  els.dashTodayRecords.textContent = String(todayCount);
+  animateDashboardStat(els.dashTotalRecords, all.length);
+  animateDashboardStat(els.dashTodayRecords, todayCount);
+}
+
+function animateDashboardStat(el, nextValue) {
+  if (!el) return;
+  const target = Number(nextValue) || 0;
+  const current =
+    Number(el.dataset.currentValue || el.textContent.replace(/[^\d.-]/g, "")) || 0;
+
+  if (el._counterFrameId) {
+    cancelAnimationFrame(el._counterFrameId);
+  }
+
+  if (current === target) {
+    el.textContent = String(target);
+    el.dataset.currentValue = String(target);
+    return;
+  }
+
+  const start = performance.now();
+  const duration = 650;
+
+  const tick = (now) => {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const value = Math.round(current + (target - current) * eased);
+    el.textContent = String(value);
+    if (progress < 1) {
+      el._counterFrameId = requestAnimationFrame(tick);
+      return;
+    }
+    el.textContent = String(target);
+    el.dataset.currentValue = String(target);
+    el._counterFrameId = 0;
+  };
+
+  el._counterFrameId = requestAnimationFrame(tick);
 }
 
 function buildHistoryCard(record) {
+  const template = getTemplateConfig(record.templateId);
   return `
     <div class="history-item">
       <div>
         <strong>${escapeHTML(record.studentName)}</strong> (${escapeHTML(record.className)}) - Roll ${escapeHTML(record.rollNumber)}<br>
-        <small>${new Date(record.createdAt).toLocaleString()} | ${record.percent.toFixed(2)}% | ${escapeHTML(record.result)}</small>
+        <small>${new Date(record.createdAt).toLocaleString()} | ${record.percent.toFixed(2)}% | ${escapeHTML(record.result)} | ${escapeHTML(template.name)}</small>
       </div>
       <div class="history-actions">
+        <button class="btn btn-ghost" data-action="templates" data-id="${record.id}">Templates</button>
         <button class="btn btn-soft" data-action="preview" data-id="${record.id}">Preview</button>
         <button class="btn btn-primary" data-action="print" data-id="${record.id}">Print</button>
       </div>
@@ -364,6 +479,10 @@ function populateClassFilter(records) {
 }
 
 function renderHistory(nameFilter = "", classFilter = "", resultFilter = "") {
+  const renderId = ++historyRenderVersion;
+  els.historyList.classList.add("is-loading");
+  els.historyList.innerHTML = createHistorySkeleton();
+
   const all = getRecords().filter((record) => record.ownerEmail === currentUser?.email);
   populateClassFilter(all);
 
@@ -374,14 +493,36 @@ function renderHistory(nameFilter = "", classFilter = "", resultFilter = "") {
     return byName && byClass && byResult;
   });
 
-  if (!filtered.length) {
-    els.historyList.innerHTML = "<p>No records found.</p>";
-    return;
-  }
+  const historyMarkup = !filtered.length
+    ? `<p class="history-empty">No records found.</p>`
+    : filtered
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .map(buildHistoryCard)
+      .join("");
 
-  els.historyList.innerHTML = filtered
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .map(buildHistoryCard)
+  window.setTimeout(() => {
+    if (renderId !== historyRenderVersion) return;
+    els.historyList.classList.remove("is-loading");
+    els.historyList.innerHTML = historyMarkup;
+  }, 140);
+}
+
+function createHistorySkeleton(items = 3) {
+  return Array.from({ length: items })
+    .map(
+      () => `
+      <div class="history-item history-skeleton" aria-hidden="true">
+        <div class="history-skeleton-left">
+          <span class="skeleton-line w-70"></span>
+          <span class="skeleton-line w-50"></span>
+        </div>
+        <div class="history-skeleton-actions">
+          <span class="skeleton-pill"></span>
+          <span class="skeleton-pill"></span>
+        </div>
+      </div>
+    `
+    )
     .join("");
 }
 
@@ -392,12 +533,16 @@ function handleHistoryActions(event) {
   const record = getRecords().find((item) => item.id === button.dataset.id);
   if (!record) return;
 
+  if (button.dataset.action === "templates") {
+    openTemplatePicker(record.id);
+  }
+
   if (button.dataset.action === "preview") {
-    openPreviewPage(record.id);
+    openPreviewPage(record.id, false, getTemplateConfig(record.templateId).id);
   }
 
   if (button.dataset.action === "print") {
-    openPreviewPage(record.id, true);
+    openPreviewPage(record.id, true, getTemplateConfig(record.templateId).id);
   }
 
 }
@@ -424,6 +569,7 @@ function showLanding() {
   document.getElementById("mediaBandSection").classList.remove("hidden");
   document.getElementById("authArea").classList.remove("hidden");
   els.dashboard.classList.add("hidden");
+  closeTemplatePicker();
 }
 
 function setActiveTab(id) {
@@ -583,6 +729,7 @@ function initEvents() {
       percent,
       grade,
       result,
+      templateId: RESULT_TEMPLATES[0].id,
       subjectMarks,
       createdAt: new Date().toISOString()
     };
@@ -590,8 +737,7 @@ function initEvents() {
     upsertRecord(record);
     renderDashboardStats();
     renderHistory(els.historySearch.value || "", els.classFilter.value || "", els.resultFilter.value || "");
-    openPreviewPage(record.id);
-    alert("Certificate generated and saved in history.");
+    openTemplatePicker(record.id);
   });
 
   els.historySearch.addEventListener("input", (event) => {
@@ -676,6 +822,32 @@ function initEvents() {
   });
 
   els.historyList.addEventListener("click", handleHistoryActions);
+
+  if (els.templatePickerGrid) {
+    els.templatePickerGrid.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-template-id]");
+      if (!button) return;
+      const recordId = els.templatePickerModal?.dataset.recordId;
+      if (!recordId) return;
+      const templateId = button.dataset.templateId;
+      setRecordTemplate(recordId, templateId);
+      renderHistory(els.historySearch.value || "", els.classFilter.value || "", els.resultFilter.value || "");
+      closeTemplatePicker();
+      openPreviewPage(recordId, false, templateId);
+    });
+  }
+
+  if (els.closeTemplatePickerBtn) {
+    els.closeTemplatePickerBtn.addEventListener("click", closeTemplatePicker);
+  }
+
+  if (els.templatePickerModal) {
+    els.templatePickerModal.addEventListener("click", (event) => {
+      if (event.target === els.templatePickerModal) {
+        closeTemplatePicker();
+      }
+    });
+  }
 
   document.querySelectorAll(".tab-btn[data-tab]").forEach((button) => {
     button.addEventListener("click", () => setActiveTab(button.dataset.tab));

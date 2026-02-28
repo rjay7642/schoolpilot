@@ -51,7 +51,7 @@ function createCertificateHTML(record) {
       <div class="cert-header">
         <div class="cert-branding">
           ${logoHTML}
-          <div>
+          <div class="cert-brand-copy">
             <p class="cert-kicker">Certified Academic Transcript</p>
             <h2 class="cert-title">${schoolTitle}</h2>
           </div>

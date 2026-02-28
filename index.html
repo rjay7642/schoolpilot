@@ -12,6 +12,35 @@
 <body>
   <div class="bg-orb orb-1"></div>
   <div class="bg-orb orb-2"></div>
+  <svg class="ui-sprite" aria-hidden="true" focusable="false">
+    <symbol id="icon-generate" viewBox="0 0 24 24">
+      <path d="M4 6h11l5 5v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M15 6v5h5M8 13h8M8 17h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-history" viewBox="0 0 24 24">
+      <path d="M3 12a9 9 0 1 0 3-6.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M3 4v4h4M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="icon-profile" viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M5 19a7 7 0 0 1 14 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-logout" viewBox="0 0 24 24">
+      <path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M14 8l4 4-4 4M18 12H9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="icon-total" viewBox="0 0 24 24">
+      <rect x="4" y="5" width="16" height="14" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 9h8M8 13h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-today" viewBox="0 0 24 24">
+      <rect x="4" y="6" width="16" height="14" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8 4v4M16 4v4M4 10h16M12 14h.01" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-workspace" viewBox="0 0 24 24">
+      <path d="M4 11h7V4H4zm9 9h7v-7h-7zM4 20h7v-7H4zm9-9h7V4h-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </symbol>
+  </svg>
 
   <header class="site-header" id="home">
     <nav class="nav container glass-panel">
@@ -214,28 +243,28 @@
     </section>
     <section class="container dash-stats">
       <article class="stat-card">
-        <p>Total Generated</p>
+        <p><svg class="icon-inline icon-stat" aria-hidden="true"><use href="#icon-total"></use></svg>Total Generated</p>
         <h4 id="dashTotalRecords">0</h4>
       </article>
       <article class="stat-card">
-        <p>Generated Today</p>
+        <p><svg class="icon-inline icon-stat" aria-hidden="true"><use href="#icon-today"></use></svg>Generated Today</p>
         <h4 id="dashTodayRecords">0</h4>
       </article>
       <article class="stat-card">
-        <p>Workspace Type</p>
+        <p><svg class="icon-inline icon-stat" aria-hidden="true"><use href="#icon-workspace"></use></svg>Workspace Type</p>
         <h4>SchoolPilot Pro</h4>
       </article>
     </section>
 
     <section class="container panel-tabs">
-      <button class="tab-btn active" data-tab="generateTab">Generate Certificate</button>
-      <button class="tab-btn" data-tab="historyTab">History</button>
-      <button class="tab-btn" data-tab="profileTab">School Profile</button>
-      <button class="tab-btn danger" id="logoutBtn">Logout</button>
+      <button class="tab-btn active" data-tab="generateTab"><svg class="icon-inline" aria-hidden="true"><use href="#icon-generate"></use></svg>Generate Certificate</button>
+      <button class="tab-btn" data-tab="historyTab"><svg class="icon-inline" aria-hidden="true"><use href="#icon-history"></use></svg>History</button>
+      <button class="tab-btn" data-tab="profileTab"><svg class="icon-inline" aria-hidden="true"><use href="#icon-profile"></use></svg>School Profile</button>
+      <button class="tab-btn danger" id="logoutBtn"><svg class="icon-inline" aria-hidden="true"><use href="#icon-logout"></use></svg>Logout</button>
     </section>
 
     <section class="container panel active" id="generateTab">
-      <h3>Student Result Details</h3>
+      <h3><svg class="icon-inline icon-heading" aria-hidden="true"><use href="#icon-generate"></use></svg>Student Result Details</h3>
       <form id="certificateForm" novalidate>
         <div class="grid-3">
           <label>Student Name<input required name="studentName" /></label>
@@ -282,7 +311,7 @@
 
     <section class="container panel" id="historyTab">
       <div class="history-head">
-        <h3>Generated History</h3>
+        <h3><svg class="icon-inline icon-heading" aria-hidden="true"><use href="#icon-history"></use></svg>Generated History</h3>
         <div class="history-filters">
           <input id="historySearch" placeholder="Search by student name..." />
           <select id="classFilter">
@@ -299,7 +328,7 @@
     </section>
 
     <section class="container panel" id="profileTab">
-      <h3>School Profile</h3>
+      <h3><svg class="icon-inline icon-heading" aria-hidden="true"><use href="#icon-profile"></use></svg>School Profile</h3>
       <div id="profileCard" class="profile-card"></div>
       <div class="profile-actions">
         <button class="btn btn-soft" type="button" id="editProfileBtn">Edit Profile</button>
@@ -324,6 +353,19 @@
       </form>
     </section>
   </main>
+
+  <div id="templatePickerModal" class="template-picker-modal hidden">
+    <div class="template-picker-dialog">
+      <div class="template-picker-head">
+        <h3>Select Premium Template</h3>
+        <p>Choose any design and open result instantly. You can change it later from history too.</p>
+      </div>
+      <div id="templatePickerGrid" class="template-picker-grid"></div>
+      <div class="template-picker-actions">
+        <button id="closeTemplatePickerBtn" class="btn btn-ghost" type="button">Close</button>
+      </div>
+    </div>
+  </div>
 
   <footer class="site-footer" id="footer">
     <div class="container footer-inner">
