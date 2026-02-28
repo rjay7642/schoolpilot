@@ -68,7 +68,12 @@ const els = {
   cancelProfileEditBtn: document.getElementById("cancelProfileEditBtn"),
   templatePickerModal: document.getElementById("templatePickerModal"),
   templatePickerGrid: document.getElementById("templatePickerGrid"),
-  closeTemplatePickerBtn: document.getElementById("closeTemplatePickerBtn")
+  closeTemplatePickerBtn: document.getElementById("closeTemplatePickerBtn"),
+  liveResultPreview: document.getElementById("liveResultPreview"),
+  faqList: document.getElementById("faqList"),
+  ctaRegisterBtn: document.getElementById("ctaRegisterBtn"),
+  ctaLoginBtn: document.getElementById("ctaLoginBtn"),
+  floatingHelpBtn: document.getElementById("floatingHelpBtn")
 };
 
 let currentUser = null;
@@ -137,6 +142,10 @@ function escapeHTML(value) {
     .replaceAll("'", "&#39;");
 }
 
+function formatNumber(value) {
+  return Number(value || 0).toFixed(2).replace(/\.00$/, "");
+}
+
 function fileToDataURL(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -176,6 +185,18 @@ function bindTopButtons() {
   document.getElementById("heroRegister").addEventListener("click", openRegister);
   document.getElementById("openLogin").addEventListener("click", openLogin);
   document.getElementById("heroLogin").addEventListener("click", openLogin);
+}
+
+function initLandingEnhancements() {
+  if (els.faqList) {
+    els.faqList.addEventListener("click", (event) => {
+      const button = event.target.closest(".faq-q");
+      if (!button) return;
+      const item = button.closest(".faq-item");
+      if (!item) return;
+      item.classList.toggle("open");
+    });
+  }
 }
 
 function registerUser(data) {
@@ -344,12 +365,92 @@ function calculateMarks() {
   const percent = totalMax > 0 ? (obtained / totalMax) * 100 : 0;
   els.totalMarks.textContent = obtained.toFixed(2).replace(/\.00$/, "");
   els.percentage.textContent = `${percent.toFixed(2)}%`;
+  updateLivePreview({ obtained, totalMax, percent });
 
   return {
     obtained,
     totalMax,
     percent
   };
+}
+
+function updateLivePreview(metrics = null) {
+  if (!els.certificateForm || !els.liveResultPreview) return;
+  const formData = Object.fromEntries(new FormData(els.certificateForm).entries());
+  const computed = metrics || calculateMarks();
+  const grade = gradeFromPercentage(computed.percent || 0);
+  const result = computed.percent >= 33 ? "PASS" : "FAIL";
+  const schoolTitle = escapeHTML((currentUser?.schoolName || "SCHOOL NAME").toUpperCase());
+  const location = escapeHTML(currentUser?.location || "Location");
+  const principalName = escapeHTML(currentUser?.principalName || "Principal");
+  const schoolMobile = escapeHTML(currentUser?.schoolMobile || "0000000000");
+  const logoHtml = currentUser?.schoolLogo
+    ? `<img class="cert-school-logo" src="${escapeHTML(currentUser.schoolLogo)}" alt="School logo" />`
+    : "";
+
+  const markMap = Object.fromEntries(
+    Array.from(els.dynamicSubjectInputs.querySelectorAll(".mark-input")).map((input) => [
+      input.dataset.subject,
+      Number(input.value || 0)
+    ])
+  );
+
+  const rows = (selectedSubjects.length ? selectedSubjects : ["Subject 1", "Subject 2"])
+    .slice(0, 6)
+    .map(
+      (subject) => `
+      <tr>
+        <td>${escapeHTML(subject)}</td>
+        <td>${formatNumber(markMap[subject] ?? 0)}</td>
+      </tr>
+    `
+    )
+    .join("");
+
+  els.liveResultPreview.innerHTML = `
+    <div class="certificate template-certificate template-1 mini-certificate">
+      <div class="cert-header">
+        <div class="cert-branding">
+          ${logoHtml}
+          <div class="cert-brand-copy">
+            <p class="cert-kicker">Certified Academic Transcript</p>
+            <h2 class="cert-title">${schoolTitle}</h2>
+          </div>
+        </div>
+        <p class="cert-sub">${location}</p>
+        <p class="cert-sub">Principal: ${principalName} | School Mobile: ${schoolMobile}</p>
+        <h3>Official Result-Certificate</h3>
+      </div>
+
+      <div class="student-grid student-grid-card">
+        <p><strong>Student Name:</strong> ${escapeHTML(formData.studentName || "Student Name")}</p>
+        <p><strong>Father's Name:</strong> ${escapeHTML(formData.fatherName || "-")}</p>
+        <p><strong>Mother's Name:</strong> ${escapeHTML(formData.motherName || "-")}</p>
+        <p><strong>Class:</strong> ${escapeHTML(formData.className || "-")}</p>
+        <p><strong>Roll Number:</strong> ${escapeHTML(formData.rollNumber || "-")}</p>
+        <p><strong>Student Phone:</strong> ${escapeHTML(formData.studentPhone || "-")}</p>
+        <p><strong>Session:</strong> ${escapeHTML(formData.session || "-")}</p>
+      </div>
+
+      <table class="marks-table">
+        <thead><tr><th>Subject</th><th>Obtained Marks</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+
+      <div class="summary-strip">
+        <p><strong>Total Max</strong><br>${formatNumber(computed.totalMax || 0)}</p>
+        <p><strong>Obtained</strong><br>${formatNumber(computed.obtained || 0)}</p>
+        <p><strong>Percentage</strong><br>${Number(computed.percent || 0).toFixed(2)}%</p>
+        <p><strong>Grade</strong><br>${grade}</p>
+      </div>
+
+      <div class="cert-foot">
+        <p><strong>Result:</strong> <span class="result-pill ${result === "PASS" ? "pass" : "fail"}">${result}</span></p>
+        <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+        <p><strong>Signature:</strong> Principal</p>
+      </div>
+    </div>
+  `;
 }
 
 function getTemplateConfig(templateId) {
@@ -548,12 +649,22 @@ function handleHistoryActions(event) {
 }
 
 function showDashboard() {
-  document.getElementById("home").classList.add("hidden");
-  document.getElementById("features").classList.add("hidden");
-  document.getElementById("showcase").classList.add("hidden");
-  document.getElementById("processSection").classList.add("hidden");
-  document.getElementById("mediaBandSection").classList.add("hidden");
-  document.getElementById("authArea").classList.add("hidden");
+  [
+    "home",
+    "features",
+    "showcase",
+    "processSection",
+    "mediaBandSection",
+    "templateShowcaseSection",
+    "testimonialsSection",
+    "workflowVisualSection",
+    "comparisonSection",
+    "securitySection",
+    "faqSection",
+    "ctaSplitSection",
+    "authArea",
+    "floatingHelpBtn"
+  ].forEach((id) => document.getElementById(id)?.classList.add("hidden"));
   els.dashboard.classList.remove("hidden");
   renderProfile();
   applySavedSubjectsForCurrentUser();
@@ -562,12 +673,22 @@ function showDashboard() {
 }
 
 function showLanding() {
-  document.getElementById("home").classList.remove("hidden");
-  document.getElementById("features").classList.remove("hidden");
-  document.getElementById("showcase").classList.remove("hidden");
-  document.getElementById("processSection").classList.remove("hidden");
-  document.getElementById("mediaBandSection").classList.remove("hidden");
-  document.getElementById("authArea").classList.remove("hidden");
+  [
+    "home",
+    "features",
+    "showcase",
+    "processSection",
+    "mediaBandSection",
+    "templateShowcaseSection",
+    "testimonialsSection",
+    "workflowVisualSection",
+    "comparisonSection",
+    "securitySection",
+    "faqSection",
+    "ctaSplitSection",
+    "authArea",
+    "floatingHelpBtn"
+  ].forEach((id) => document.getElementById(id)?.classList.remove("hidden"));
   els.dashboard.classList.add("hidden");
   closeTemplatePicker();
 }
@@ -614,6 +735,22 @@ function hideProfileEditForm() {
 
 function initEvents() {
   bindTopButtons();
+
+  if (els.certificateForm) {
+    els.certificateForm.addEventListener("input", (event) => {
+      const target = event.target;
+      if (target.classList.contains("mark-input") || target.id === "totalMaxMarks") return;
+      updateLivePreview();
+    });
+  }
+
+  if (els.ctaRegisterBtn) {
+    els.ctaRegisterBtn.addEventListener("click", () => showAuthCard("register"));
+  }
+
+  if (els.ctaLoginBtn) {
+    els.ctaLoginBtn.addEventListener("click", () => showAuthCard("login"));
+  }
 
   els.registerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -941,4 +1078,6 @@ initSubjectPool();
 initEvents();
 restoreSession();
 showAuthCard("login");
+updateLivePreview({ obtained: 0, totalMax: 0, percent: 0 });
 initLandingEffects();
+initLandingEnhancements();

@@ -460,6 +460,249 @@ body {
   box-shadow: 0 10px 22px rgba(10, 45, 78, 0.1);
 }
 
+.section-wrap {
+  margin-top: 22px;
+}
+
+.template-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.template-strip-card {
+  border: 1px solid #c6d9ea;
+  border-radius: 12px;
+  background: linear-gradient(165deg, #ffffff, #f3f9ff);
+  padding: 10px;
+  box-shadow: 0 10px 18px rgba(10, 39, 64, 0.08);
+}
+
+.template-thumb {
+  height: 70px;
+  border-radius: 8px;
+}
+
+.template-thumb.t1 { background: linear-gradient(125deg, #0f4f86, #2b8abd); }
+.template-thumb.t2 { background: linear-gradient(125deg, #0a6247, #34a57a); }
+.template-thumb.t3 { background: linear-gradient(125deg, #1b2448, #b68a3b); }
+.template-thumb.t4 { background: linear-gradient(125deg, #7a3c52, #d48da5); }
+.template-thumb.t5 { background: linear-gradient(125deg, #2b3d52, #7b96b3); }
+
+.template-strip-card h4 {
+  margin: 8px 0 5px;
+  color: #143f65;
+}
+
+.template-strip-card p {
+  margin: 0;
+  color: #536f89;
+  font-size: 0.83rem;
+  min-height: 52px;
+}
+
+.template-strip-card a {
+  margin-top: 8px;
+  display: inline-block;
+  color: #0f5e9c;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.testimonial-card {
+  border: 1px solid #c6d9ea;
+  border-radius: 12px;
+  background: linear-gradient(165deg, #ffffff, #f3f9ff);
+  padding: 12px;
+  box-shadow: 0 10px 18px rgba(10, 39, 64, 0.08);
+}
+
+.testimonial-card p {
+  margin: 0;
+  color: #3e5e7b;
+  line-height: 1.6;
+}
+
+.testimonial-card h4 {
+  margin: 10px 0 2px;
+  color: #133f64;
+}
+
+.testimonial-card small {
+  color: #607d97;
+}
+
+.workflow-visual-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.workflow-visual-card {
+  border: 1px solid #c7daeb;
+  border-radius: 12px;
+  background: linear-gradient(165deg, #ffffff, #f2f8ff);
+  padding: 12px;
+}
+
+.workflow-visual-card span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #0f5f9a;
+  color: #fff;
+  font-weight: 800;
+}
+
+.workflow-visual-card h4 {
+  margin: 8px 0 6px;
+  color: #123f64;
+}
+
+.workflow-visual-card p {
+  margin: 0;
+  color: #536f89;
+}
+
+.comparison-table-wrap {
+  border: 1px solid #c8dbec;
+  border-radius: 12px;
+  overflow: auto;
+  background: #fff;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 620px;
+}
+
+.comparison-table th,
+.comparison-table td {
+  border: 1px solid #d4e2f0;
+  padding: 10px;
+  text-align: left;
+}
+
+.comparison-table th {
+  background: linear-gradient(120deg, #0f5f9a, #2a81c0);
+  color: #fff;
+}
+
+.comparison-table tbody tr:nth-child(odd) td {
+  background: #f8fcff;
+}
+
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.security-grid article {
+  border: 1px solid #c8dcec;
+  border-radius: 12px;
+  padding: 12px;
+  background: linear-gradient(165deg, #ffffff, #f2f8ff);
+}
+
+.security-grid h4 {
+  margin: 0 0 6px;
+  color: #123f64;
+}
+
+.security-grid p {
+  margin: 0;
+  color: #526f89;
+}
+
+.faq-list {
+  display: grid;
+  gap: 8px;
+}
+
+.faq-item {
+  border: 1px solid #c8dbec;
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.faq-q {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: linear-gradient(180deg, #f9fcff, #f1f8ff);
+  color: #173f62;
+  padding: 11px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.faq-a {
+  display: none;
+  padding: 0 12px 11px;
+}
+
+.faq-item.open .faq-a {
+  display: block;
+}
+
+.faq-a p {
+  margin: 0;
+  color: #4f6c86;
+}
+
+.cta-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.cta-pane {
+  border: 1px solid #c4d8eb;
+  border-radius: 14px;
+  padding: 16px;
+  background: linear-gradient(160deg, #ffffff, #edf6ff);
+}
+
+.cta-pane.alt {
+  background: linear-gradient(160deg, #f8fbff, #eff5ff);
+}
+
+.cta-pane h3 {
+  margin: 0 0 8px;
+  color: #113f66;
+}
+
+.cta-pane p {
+  margin: 0 0 12px;
+  color: #516f8a;
+}
+
+.floating-help-btn {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1200;
+  border: 1px solid #0f5a95;
+  background: linear-gradient(130deg, #0f5f9a, #2f88c4);
+  color: #fff;
+  border-radius: 999px;
+  padding: 10px 16px;
+  text-decoration: none;
+  font-weight: 800;
+  box-shadow: 0 14px 22px rgba(8, 47, 80, 0.26);
+}
+
 .forms-wrap {
   width: min(940px, 92%);
   margin: 0 auto 28px;
@@ -1320,6 +1563,155 @@ select {
   border: 1px solid #d3e1f0;
   border-radius: 10px;
   background: #f7fbff;
+}
+
+.generate-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 14px;
+  align-items: start;
+}
+
+.live-preview-card {
+  position: sticky;
+  top: 16px;
+  border: 1px solid #bfd3e8;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 88% 8%, rgba(220, 240, 255, 0.62), rgba(220, 240, 255, 0)),
+    linear-gradient(170deg, #ffffff, #f3f9ff);
+  padding: 13px;
+  box-shadow: 0 14px 24px rgba(8, 38, 64, 0.1);
+}
+
+.live-preview-tag {
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #2a5f8b;
+  font-weight: 800;
+}
+
+.live-preview-card h4 {
+  margin: 6px 0 0;
+  color: #0f4068;
+}
+
+.live-preview-canvas {
+  margin-top: 8px;
+  border: 1px solid #cfdfef;
+  border-radius: 10px;
+  background: #f6fbff;
+  overflow: auto;
+  max-height: 560px;
+}
+
+.live-preview-canvas .mini-certificate {
+  margin: 0;
+  border-width: 3px;
+  border-radius: 8px;
+  padding: 7px;
+  box-shadow: none;
+}
+
+.live-preview-canvas .cert-watermark,
+.live-preview-canvas .cert-ribbon {
+  display: none;
+}
+
+.live-preview-canvas .cert-header {
+  border-radius: 10px;
+  margin-bottom: 8px;
+  padding: 8px;
+}
+
+.live-preview-canvas .cert-branding {
+  gap: 8px;
+}
+
+.live-preview-canvas .cert-school-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.live-preview-canvas .cert-kicker {
+  margin: 0 0 2px;
+  font-size: 0.45rem;
+  letter-spacing: 0.08em;
+}
+
+.live-preview-canvas .cert-title {
+  font-size: 0.86rem;
+  letter-spacing: 0.05em;
+}
+
+.live-preview-canvas .cert-sub {
+  margin: 1px 0;
+  font-size: 0.54rem;
+}
+
+.live-preview-canvas .cert-header h3 {
+  margin: 4px auto 0;
+  padding-top: 4px;
+  font-size: 0.6rem;
+}
+
+.live-preview-canvas .student-grid-card {
+  margin-bottom: 7px;
+  padding: 7px;
+}
+
+.live-preview-canvas .student-grid {
+  gap: 4px 8px;
+}
+
+.live-preview-canvas .student-grid p {
+  font-size: 0.54rem;
+}
+
+.live-preview-canvas .marks-table {
+  margin-top: 6px;
+}
+
+.live-preview-canvas .marks-table th,
+.live-preview-canvas .marks-table td {
+  padding: 4px;
+  font-size: 0.52rem;
+}
+
+.live-preview-canvas .summary-strip {
+  margin-top: 7px;
+  padding: 6px;
+  gap: 6px;
+}
+
+.live-preview-canvas .summary-strip p {
+  font-size: 0.5rem;
+  padding: 5px 4px;
+}
+
+.live-preview-canvas .cert-foot {
+  margin-top: 8px;
+  padding-top: 7px;
+  gap: 8px;
+}
+
+.live-preview-canvas .cert-foot p {
+  font-size: 0.53rem;
+}
+
+.live-preview-canvas .result-pill {
+  font-size: 0.5rem;
+  padding: 2px 6px;
+}
+
+.live-preview-card small {
+  margin-top: 10px;
+  display: block;
+  color: #6b849d;
 }
 
 .template-picker-modal {
@@ -2656,12 +3048,20 @@ select {
   }
 
   .showcase-grid,
-  .process-grid {
+  .process-grid,
+  .template-strip,
+  .testimonial-grid,
+  .workflow-visual-grid,
+  .security-grid {
     grid-template-columns: 1fr 1fr;
   }
 
   .media-band {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .cta-split {
+    grid-template-columns: 1fr;
   }
 
   .nav-links {
@@ -2721,6 +3121,14 @@ select {
 
   .summary-strip {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .generate-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .live-preview-card {
+    position: static;
   }
 
   .template-picker-grid {
@@ -2788,7 +3196,11 @@ select {
 
   .showcase-grid,
   .process-grid,
-  .media-band {
+  .media-band,
+  .template-strip,
+  .testimonial-grid,
+  .workflow-visual-grid,
+  .security-grid {
     grid-template-columns: 1fr;
   }
 
