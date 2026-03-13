@@ -659,22 +659,14 @@ function handleHistoryActions(event) {
 }
 
 function showDashboard() {
-  [
-    "home",
-    "features",
-    "idShowcase",
-    "showcase",
-    "processSection",
-    "mediaBandSection",
-    "templateShowcaseSection",
-    "testimonialsSection",
-    "workflowVisualSection",
-    "comparisonSection",
-    "securitySection",
-    "faqSection",
-    "ctaSplitSection",
-    "authOverlay"
-  ].forEach((id) => document.getElementById(id)?.classList.add("hidden"));
+  const landingSections = [
+    "home", "features", "idShowcase", "processSection", "mediaBandSection", 
+    "templateShowcaseSection", "testimonialsSection", "workflowVisualSection", 
+    "comparisonSection", "securitySection", "faqSection", "ctaSplitSection", 
+    "authOverlay", "footer"
+  ];
+  landingSections.forEach((id) => document.getElementById(id)?.classList.add("hidden"));
+  
   els.dashboard.classList.remove("hidden");
   renderProfile();
   applySavedSubjectsForCurrentUser();
@@ -683,22 +675,14 @@ function showDashboard() {
 }
 
 function showLanding() {
-  [
-    "home",
-    "features",
-    "idShowcase",
-    "showcase",
-    "processSection",
-    "mediaBandSection",
-    "templateShowcaseSection",
-    "testimonialsSection",
-    "workflowVisualSection",
-    "comparisonSection",
-    "securitySection",
-    "faqSection",
-    "ctaSplitSection",
-    "authArea"
-  ].forEach((id) => document.getElementById(id)?.classList.remove("hidden"));
+  const landingSections = [
+    "home", "features", "idShowcase", "processSection", "mediaBandSection", 
+    "templateShowcaseSection", "testimonialsSection", "workflowVisualSection", 
+    "comparisonSection", "securitySection", "faqSection", "ctaSplitSection", 
+    "footer"
+  ];
+  landingSections.forEach((id) => document.getElementById(id)?.classList.remove("hidden"));
+  
   els.dashboard.classList.add("hidden");
   closeAuthModal();
   closeTemplatePicker();
