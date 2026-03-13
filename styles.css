@@ -1976,165 +1976,7 @@ select {
 }
 
 .generate-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: 14px;
-  align-items: start;
-}
-
-.live-preview-card {
-  position: sticky;
-  top: 16px;
-  border: 1px solid #bfd3e8;
-  border-radius: 14px;
-  background:
-    radial-gradient(circle at 88% 8%, rgba(220, 240, 255, 0.62), rgba(220, 240, 255, 0)),
-    linear-gradient(170deg, #ffffff, #f3f9ff);
-  padding: 13px;
-  box-shadow: 0 14px 24px rgba(8, 38, 64, 0.1);
-}
-
-.live-preview-tag {
-  margin: 0;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #2a5f8b;
-  font-weight: 800;
-}
-
-.live-preview-card h4 {
-  margin: 6px 0 0;
-  color: #0f4068;
-}
-
-.live-preview-canvas {
-  margin-top: 8px;
-  border: 1px solid #cfdfef;
-  border-radius: 10px;
-  background: #f6fbff;
-  overflow: auto;
-  max-height: 560px;
-}
-
-.live-preview-canvas .mini-certificate {
-  margin: 0;
-  border-width: 3px;
-  border-radius: 8px;
-  padding: 7px;
-  box-shadow: none;
-}
-
-.live-preview-canvas .cert-watermark,
-.live-preview-canvas .cert-ribbon {
-  display: none;
-}
-
-.live-preview-canvas .cert-exam-tag {
-  font-size: 0.4rem;
-  padding: 2px 8px;
-  margin-bottom: 5px;
-  letter-spacing: 0.5px;
-}
-
-.live-preview-canvas .cert-logo-watermark {
-  width: 120px;
-  height: 120px;
-  opacity: 0.08;
-}
-
-.live-preview-canvas .cert-header {
-  border-radius: 10px;
-  margin-bottom: 8px;
-  padding: 8px;
-}
-
-.live-preview-canvas .cert-branding {
-  gap: 8px;
-}
-
-.live-preview-canvas .cert-school-logo {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  padding: 2px;
-}
-
-.live-preview-canvas .cert-kicker {
-  margin: 0 0 2px;
-  font-size: 0.45rem;
-  letter-spacing: 0.08em;
-}
-
-.live-preview-canvas .cert-title {
-  font-size: 0.86rem;
-  letter-spacing: 0.05em;
-}
-
-.live-preview-canvas .cert-sub {
-  margin: 1px 0;
-  font-size: 0.54rem;
-}
-
-.live-preview-canvas .cert-header h3 {
-  margin: 4px auto 0;
-  padding-top: 4px;
-  font-size: 0.6rem;
-}
-
-.live-preview-canvas .student-grid-card {
-  margin-bottom: 7px;
-  padding: 7px;
-}
-
-.live-preview-canvas .student-grid {
-  gap: 4px 8px;
-}
-
-.live-preview-canvas .student-grid p {
-  font-size: 0.54rem;
-}
-
-.live-preview-canvas .marks-table {
-  margin-top: 6px;
-}
-
-.live-preview-canvas .marks-table th,
-.live-preview-canvas .marks-table td {
-  padding: 4px;
-  font-size: 0.52rem;
-}
-
-.live-preview-canvas .summary-strip {
-  margin-top: 7px;
-  padding: 6px;
-  gap: 6px;
-}
-
-.live-preview-canvas .summary-strip p {
-  font-size: 0.5rem;
-  padding: 5px 4px;
-}
-
-.live-preview-canvas .cert-foot {
-  margin-top: 8px;
-  padding-top: 7px;
-  gap: 8px;
-}
-
-.live-preview-canvas .cert-foot p {
-  font-size: 0.53rem;
-}
-
-.live-preview-canvas .result-pill {
-  font-size: 0.5rem;
-  padding: 2px 6px;
-}
-
-.live-preview-card small {
-  margin-top: 10px;
-  display: block;
-  color: #6b849d;
+  display: block; /* Removed grid since there is no preview sidebar */
 }
 
 .template-picker-modal {
@@ -2262,13 +2104,16 @@ select {
 }
 
 .certificate {
-  background: linear-gradient(180deg, #ffffff, #f9fcff);
-  border: 6px double #165b96;
-  border-radius: 10px;
-  padding: 16px;
+  background: #ffffff;
+  border: 4px solid #0f5a95;
+  border-radius: 0;
+  padding: 0;
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 16px 34px rgba(13, 58, 102, 0.16);
+  overflow: visible;
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .cert-watermark {
@@ -4024,7 +3869,7 @@ select {
   @media print {
     @page {
       size: A4 portrait;
-      margin: 5mm;
+      margin: 0; /* Zero margin to control everything via CSS */
     }
 
     body {
@@ -4049,14 +3894,15 @@ select {
     .print-area {
       position: absolute;
       left: 0;
-      right: 0;
       top: 0;
-      margin: 0 auto !important;
-      width: 195mm !important;
+      width: 210mm !important; /* Standard A4 Width */
+      height: 297mm !important; /* Standard A4 Height */
+      margin: 0 !important;
+      padding: 10mm !important; /* Internal safety margin */
       box-shadow: none !important;
       page-break-inside: avoid;
-      transform: scale(0.97);
-      transform-origin: top center;
+      background: white !important;
+      transform: none !important; /* Remove scaling that makes it look small */
     }
 
     /* Tighten for one-page fit with side logo */

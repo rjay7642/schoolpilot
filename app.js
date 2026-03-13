@@ -25,11 +25,11 @@ const SUBJECT_LIBRARY = [
 ];
 
 const RESULT_TEMPLATES = [
-  { id: "template-1", name: "Royal Horizon", page: "result-template-1.html", swatch: "linear-gradient(130deg, #0f4f86, #2b8abd)" },
-  { id: "template-2", name: "Emerald Luxe", page: "result-template-2.html", swatch: "linear-gradient(130deg, #0a6247, #34a57a)" },
-  { id: "template-3", name: "Midnight Gold", page: "result-template-3.html", swatch: "linear-gradient(130deg, #1b2448, #b68a3b)" },
-  { id: "template-4", name: "Rose Quartz", page: "result-template-4.html", swatch: "linear-gradient(130deg, #7a3c52, #d48da5)" },
-  { id: "template-5", name: "Platinum Slate", page: "result-template-5.html", swatch: "linear-gradient(130deg, #2b3d52, #7b96b3)" }
+  { id: "template-1", name: "Royal Horizon", page: "result-preview.html", swatch: "linear-gradient(130deg, #0f4f86, #2b8abd)" },
+  { id: "template-2", name: "Emerald Luxe", page: "result-preview.html", swatch: "linear-gradient(130deg, #0a6247, #34a57a)" },
+  { id: "template-3", name: "Midnight Gold", page: "result-preview.html", swatch: "linear-gradient(130deg, #1b2448, #b68a3b)" },
+  { id: "template-4", name: "Rose Quartz", page: "result-preview.html", swatch: "linear-gradient(130deg, #7a3c52, #d48da5)" },
+  { id: "template-5", name: "Platinum Slate", page: "result-preview.html", swatch: "linear-gradient(130deg, #2b3d52, #7b96b3)" }
 ];
 
 const els = {
@@ -372,7 +372,6 @@ function calculateMarks() {
   const percent = totalMax > 0 ? (obtained / totalMax) * 100 : 0;
   els.totalMarks.textContent = obtained.toFixed(2).replace(/\.00$/, "");
   els.percentage.textContent = `${percent.toFixed(2)}%`;
-  updateLivePreview({ obtained, totalMax, percent });
 
   return {
     obtained,
@@ -381,89 +380,6 @@ function calculateMarks() {
   };
 }
 
-function updateLivePreview(metrics = null) {
-  if (!els.certificateForm || !els.liveResultPreview) return;
-  const formData = Object.fromEntries(new FormData(els.certificateForm).entries());
-  const computed = metrics || calculateMarks();
-  const grade = gradeFromPercentage(computed.percent || 0);
-  const result = computed.percent >= 33 ? "PASS" : "FAIL";
-  const schoolTitle = escapeHTML((currentUser?.schoolName || "SCHOOL NAME").toUpperCase());
-  const location = escapeHTML(currentUser?.location || "Location");
-  const principalName = escapeHTML(currentUser?.principalName || "Principal");
-  const schoolMobile = escapeHTML(currentUser?.schoolMobile || "0000000000");
-  const logoHtml = currentUser?.schoolLogo
-    ? `<img class="cert-school-logo" src="${escapeHTML(currentUser.schoolLogo)}" alt="School logo" />`
-    : "";
-
-  const markMap = Object.fromEntries(
-    Array.from(els.dynamicSubjectInputs.querySelectorAll(".mark-input")).map((input) => [
-      input.dataset.subject,
-      Number(input.value || 0)
-    ])
-  );
-
-  const rows = (selectedSubjects.length ? selectedSubjects : ["Subject 1", "Subject 2"])
-    .slice(0, 6)
-    .map(
-      (subject) => `
-      <tr>
-        <td>${escapeHTML(subject)}</td>
-        <td>${formatNumber(markMap[subject] ?? 0)}</td>
-      </tr>
-    `
-    )
-    .join("");
-  const logoWatermarkHTML = currentUser?.schoolLogo
-    ? `<img class="cert-logo-watermark" src="${escapeHTML(currentUser.schoolLogo)}" alt="Watermark" />`
-    : "";
-
-  els.liveResultPreview.innerHTML = `
-      <div class="certificate template-certificate template-1 mini-certificate">
-        ${logoWatermarkHTML}
-        <div class="cert-header">
-          <p class="cert-exam-tag">${escapeHTML((formData.examType || "FINAL EXAMINATION").toUpperCase())}</p>
-          <div class="cert-branding">
-            ${logoHtml}
-            <div class="cert-brand-copy">
-              <p class="cert-kicker">Certified Academic Transcript</p>
-              <h2 class="cert-title">${schoolTitle}</h2>
-            </div>
-          </div>
-          <p class="cert-sub">${location}</p>
-          <p class="cert-sub">Principal: ${principalName} | School Mobile: ${schoolMobile}</p>
-          <h3>Official Result-Certificate</h3>
-        </div>
-
-        <div class="student-grid student-grid-card">
-          <p><strong>Student Name:</strong> ${escapeHTML(formData.studentName || "Student Name")}</p>
-          <p><strong>Father's Name:</strong> ${escapeHTML(formData.fatherName || "-")}</p>
-          <p><strong>Mother's Name:</strong> ${escapeHTML(formData.motherName || "-")}</p>
-          <p><strong>Class:</strong> ${escapeHTML(formData.className || "-")}</p>
-          <p><strong>Roll Number:</strong> ${escapeHTML(formData.rollNumber || "-")}</p>
-          <p><strong>Student Phone:</strong> ${escapeHTML(formData.studentPhone || "-")}</p>
-          <p><strong>Session:</strong> ${escapeHTML(formData.session || "-")}</p>
-        </div>
-
-      <table class="marks-table">
-        <thead><tr><th>Subject</th><th>Obtained Marks</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-
-      <div class="summary-strip">
-        <p><strong>Total Max</strong><br>${formatNumber(computed.totalMax || 0)}</p>
-        <p><strong>Obtained</strong><br>${formatNumber(computed.obtained || 0)}</p>
-        <p><strong>Percentage</strong><br>${Number(computed.percent || 0).toFixed(2)}%</p>
-        <p><strong>Grade</strong><br>${grade}</p>
-      </div>
-
-      <div class="cert-foot">
-        <p><strong>Result:</strong> <span class="result-pill ${result === "PASS" ? "pass" : "fail"}">${result}</span></p>
-        <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
-        <p><strong>Signature:</strong> Principal</p>
-      </div>
-    </div>
-  `;
-}
 
 function getTemplateConfig(templateId) {
   return RESULT_TEMPLATES.find((item) => item.id === templateId) || RESULT_TEMPLATES[0];
@@ -745,9 +661,6 @@ function initEvents() {
 
   if (els.certificateForm) {
     els.certificateForm.addEventListener("input", (event) => {
-      const target = event.target;
-      if (target.classList.contains("mark-input") || target.id === "totalMaxMarks") return;
-      updateLivePreview();
     });
   }
 
@@ -1096,6 +1009,5 @@ if (!sessionRestored) {
   // Option: showAuthCard("login"); if you want it to pop up on landing
   // For now, let's NOT trigger it automatically to avoid the "keeps coming" issue
 }
-updateLivePreview({ obtained: 0, totalMax: 0, percent: 0 });
 initLandingEffects();
 initLandingEnhancements();

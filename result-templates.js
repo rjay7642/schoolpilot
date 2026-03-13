@@ -4,7 +4,7 @@ const STORAGE_KEYS = {
 };
 
 function escapeHTML(value) {
-  return String(value)
+  return String(value || "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -21,16 +21,28 @@ function getRecords() {
 }
 
 function formatNumber(value) {
-  return Number(value).toFixed(2).replace(/\.00$/, "");
+  return Number(value || 0).toFixed(2).replace(/\.00$/, "");
 }
+
+// Global Elite Print Styling Bridge
+const PRINT_STYLES = `
+  style="
+    display: flex; 
+    align-items: center; 
+    justify-content: flex-start; 
+    text-align: left; 
+    gap: 20px;
+    margin-bottom: 15px;
+  "
+`;
 
 function buildMarksRows(subjectMarks) {
   return (subjectMarks || [])
     .map(
       (item) => `
       <tr>
-        <td>${escapeHTML(item.subject)}</td>
-        <td>${formatNumber(item.marks)}</td>
+        <td style="text-align: left; padding-left: 15px;">${escapeHTML(item.subject)}</td>
+        <td style="font-weight: 700;">${formatNumber(item.marks)}</td>
       </tr>
     `
     )
@@ -39,226 +51,126 @@ function buildMarksRows(subjectMarks) {
 
 function buildStudentGrid(record) {
   return `
-    <div class="student-grid student-grid-card">
-      <p><strong>Student Name:</strong> ${escapeHTML(record.studentName || "")}</p>
-      <p><strong>Father's Name:</strong> ${escapeHTML(record.fatherName || "")}</p>
-      <p><strong>Mother's Name:</strong> ${escapeHTML(record.motherName || "")}</p>
-      <p><strong>Class:</strong> ${escapeHTML(record.className || "")}</p>
-      <p><strong>Roll Number:</strong> ${escapeHTML(record.rollNumber || "")}</p>
-      <p><strong>Student Phone:</strong> ${escapeHTML(record.studentPhone || "N/A")}</p>
-      <p><strong>Session:</strong> ${escapeHTML(record.session || "")}</p>
+    <div class="student-grid student-grid-card" style="margin-bottom: 15px;">
+      <p><strong>Student Name:</strong> ${escapeHTML(record.studentName)}</p>
+      <p><strong>Father's Name:</strong> ${escapeHTML(record.fatherName)}</p>
+      <p><strong>Mother's Name:</strong> ${escapeHTML(record.motherName || "N/A")}</p>
+      <p><strong>Class:</strong> ${escapeHTML(record.className)}</p>
+      <p><strong>Roll Number:</strong> ${escapeHTML(record.rollNumber)}</p>
+      <p><strong>Session:</strong> ${escapeHTML(record.session)}</p>
     </div>
   `;
 }
 
-function buildSummary(record) {
-  return `
-    <div class="summary-strip">
-      <p><strong>Total Max</strong><br>${formatNumber(record.totalMax)}</p>
-      <p><strong>Obtained</strong><br>${formatNumber(record.obtained)}</p>
-      <p><strong>Percentage</strong><br>${Number(record.percent || 0).toFixed(2)}%</p>
-      <p><strong>Grade</strong><br>${escapeHTML(record.grade || "")}</p>
-    </div>
-  `;
-}
-
-function buildFooter(record) {
-  return `
-    <div class="cert-foot">
-      <p><strong>Result:</strong> <span class="result-pill ${record.result === "PASS" ? "pass" : "fail"}">${escapeHTML(record.result || "")}</span></p>
-      <p><strong>Date:</strong> ${new Date(record.createdAt).toLocaleDateString()}</p>
-      <p><strong>Signature:</strong> Principal</p>
-    </div>
-  `;
-}
-
-function templateOne(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML) {
-  return `
-    <div class="certificate print-area template-certificate template-1" id="printable-${record.id}">
-      ${logoWatermarkHTML}
-      <div class="cert-watermark">${schoolTitle}</div>
-      <div class="cert-watermark wm-2">${schoolTitle}</div>
-      <div class="cert-ribbon">Academic Session ${escapeHTML(record.session || "")}</div>
-      <div class="cert-header" style="text-align: left;">
-        <p class="cert-exam-tag" style="margin-left: 0; margin-right: auto;">${escapeHTML((record.examType || "FINAL EXAMINATION").toUpperCase())}</p>
-        <div class="cert-branding" style="justify-content: flex-start;">
-          ${logoHTML}
-          <div class="cert-brand-copy">
-            <p class="cert-kicker">Certified Academic Transcript</p>
-            <h2 class="cert-title" style="text-align: left;">${schoolTitle}</h2>
-          </div>
-        </div>
-        <p class="cert-sub" style="text-align: left;">${escapeHTML(record.location || "")}</p>
-        <p class="cert-sub" style="text-align: left;">Principal: ${escapeHTML(record.principalName || "")} | School Mobile: ${escapeHTML(record.schoolMobile || "")}</p>
-        <h3 style="text-align: left; margin-left: 0;">Official Result-Certificate</h3>
-      </div>
-
-      ${buildStudentGrid(record)}
-
-      <table class="marks-table">
-        <thead><tr><th>Subject</th><th>Obtained Marks</th></tr></thead>
-        <tbody>${marksRows}</tbody>
-      </table>
-
-      ${buildSummary(record)}
-      ${buildFooter(record)}
-    </div>
-  `;
-}
-
-function templateTwo(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML) {
-  return `
-    <div class="certificate print-area template-certificate template-2" id="printable-${record.id}">
-      ${logoWatermarkHTML}
-      <div class="template-accent"></div>
-      <div class="t2-head">
-        <p class="cert-exam-tag">${escapeHTML((record.examType || "FINAL EXAMINATION").toUpperCase())}</p>
-        <div class="t2-brand">
-          ${logoHTML}
-          <div>
-            <p class="t2-kicker">Academic Excellence Document</p>
-            <h2>${schoolTitle}</h2>
-            <p>${escapeHTML(record.location || "")}</p>
-          </div>
-        </div>
-        <div class="t2-meta">
-          <p><strong>Session</strong><span>${escapeHTML(record.session || "")}</span></p>
-          <p><strong>Principal</strong><span>${escapeHTML(record.principalName || "")}</span></p>
-        </div>
-      </div>
-
-      <h3 class="template-title">Student Performance Statement</h3>
-      ${buildStudentGrid(record)}
-
-      <table class="marks-table">
-        <thead><tr><th>Subject</th><th>Obtained Marks</th></tr></thead>
-        <tbody>${marksRows}</tbody>
-      </table>
-
-      ${buildSummary(record)}
-      ${buildFooter(record)}
-    </div>
-  `;
-}
-
-function templateThree(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML) {
-  return `
-    <div class="certificate print-area template-certificate template-3" id="printable-${record.id}">
-      ${logoWatermarkHTML}
-      <div class="t3-head">
-        <p class="cert-exam-tag">${escapeHTML((record.examType || "FINAL EXAMINATION").toUpperCase())}</p>
-        <div class="t3-left">
-          ${logoHTML}
-          <div>
-            <p class="t3-kicker">Premium Result Ledger</p>
-            <h2>${schoolTitle}</h2>
-          </div>
-        </div>
-        <div class="t3-right">
-          <p>${escapeHTML(record.location || "")}</p>
-          <p>Principal: ${escapeHTML(record.principalName || "")}</p>
-          <p>Mobile: ${escapeHTML(record.schoolMobile || "")}</p>
-        </div>
-      </div>
-
-      <h3 class="template-title">Annual Academic Record</h3>
-      ${buildStudentGrid(record)}
-
-      <table class="marks-table">
-        <thead><tr><th>Subject</th><th>Obtained Marks</th></tr></thead>
-        <tbody>${marksRows}</tbody>
-      </table>
-
-      ${buildSummary(record)}
-      ${buildFooter(record)}
-    </div>
-  `;
-}
-
-function templateFour(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML) {
-  return `
-    <div class="certificate print-area template-certificate template-4" id="printable-${record.id}">
-      ${logoWatermarkHTML}
-      <div class="t4-corner"></div>
-      <div class="t4-head" style="text-align: left;">
-        <p class="cert-exam-tag" style="margin-left: 0; margin-right: auto;">${escapeHTML((record.examType || "FINAL EXAMINATION").toUpperCase())}</p>
-        <p class="t4-kicker">Institutional Certificate</p>
-        <div class="t4-brand-row" style="justify-content: flex-start;">
-          ${logoHTML}
-          <h2 style="text-align: left;">${schoolTitle}</h2>
-        </div>
-        <p class="t4-sub" style="text-align: left;">${escapeHTML(record.location || "")}</p>
-      </div>
-
-      <h3 class="template-title" style="text-align: left;">Official Student Marksheet</h3>
-      ${buildStudentGrid(record)}
-
-      <table class="marks-table">
-        <thead><tr><th>Subject</th><th>Obtained Marks</th></tr></thead>
-        <tbody>${marksRows}</tbody>
-      </table>
-
-      ${buildSummary(record)}
-      ${buildFooter(record)}
-    </div>
-  `;
-}
-
-function templateFive(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML) {
-  return `
-    <div class="certificate print-area template-certificate template-5" id="printable-${record.id}">
-      ${logoWatermarkHTML}
-      <div class="t5-band">
-        <p class="cert-exam-tag">${escapeHTML((record.examType || "FINAL EXAMINATION").toUpperCase())}</p>
-        <div class="t5-brand">
-          ${logoHTML}
-          <div>
-            <h2>${schoolTitle}</h2>
-            <p>Session ${escapeHTML(record.session || "")}</p>
-          </div>
-        </div>
-        <p>${escapeHTML(record.location || "")}</p>
-      </div>
-
-      <h3 class="template-title">Consolidated Result Transcript</h3>
-      ${buildStudentGrid(record)}
-
-      <table class="marks-table">
-        <thead><tr><th>Subject</th><th>Obtained Marks</th></tr></thead>
-        <tbody>${marksRows}</tbody>
-      </table>
-
-      ${buildSummary(record)}
-      ${buildFooter(record)}
-    </div>
-  `;
-}
-
-function createCertificateHTML(record, templateId) {
-  const schoolTitle = escapeHTML((record.schoolName || "").toUpperCase());
+function templateOne(record) {
+  const schoolTitle = escapeHTML(record.schoolName).toUpperCase();
   const logoSource = record.schoolLogo || "";
-  const logoHTML = logoSource
-    ? `<img class="cert-school-logo" src="${escapeHTML(logoSource)}" alt="School logo" />`
+  const logoHTML = logoSource 
+    ? `<img src="${escapeHTML(logoSource)}" style="width: 85px; height: 85px; border-radius: 12px; object-fit: cover; border: 3px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1);" />`
     : "";
-  const logoWatermarkHTML = logoSource
-    ? `<img class="cert-logo-watermark" src="${escapeHTML(logoSource)}" alt="Watermark" />`
-    : "";
-  const marksRows = buildMarksRows(record.subjectMarks || []);
+  const marksRows = buildMarksRows(record.subjectMarks);
 
-  if (templateId === "template-2") return templateTwo(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML);
-  if (templateId === "template-3") return templateThree(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML);
-  if (templateId === "template-4") return templateFour(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML);
-  if (templateId === "template-5") return templateFive(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML);
-  return templateOne(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML);
+  return `
+    <div class="certificate print-area" id="printable-${record.id}">
+      <div style="padding: 40px; background: white; min-height: 297mm; border: 15px solid #0f5a95; box-sizing: border-box;">
+        <!-- Header -->
+        <div style="background: #f0f7ff; padding: 25px; border-radius: 8px; border: 1px solid #d1e2f5; margin-bottom: 30px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+             <span style="background: #0f5a95; color: white; padding: 4px 12px; border-radius: 4px; font-weight: 800; font-size: 0.75rem;">${escapeHTML(record.examType || "OFFICIAL TRANSCRIPT")}</span>
+             <span style="font-weight: 800; color: #0f5a95; font-size: 0.7rem;">REF: ${record.id.slice(-8).toUpperCase()}</span>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 20px;">
+            ${logoHTML}
+            <div>
+              <h2 style="margin: 0; font-size: 2rem; color: #0a3f70; font-family: 'DM Serif Display', serif;">${schoolTitle}</h2>
+              <p style="margin: 5px 0 0; color: #476a8a; font-weight: 600;">${escapeHTML(record.location)}</p>
+            </div>
+          </div>
+          
+          <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #d1e2f5; display: flex; gap: 25px; font-size: 0.85rem; color: #2a4e6e;">
+            <span><strong>Principal:</strong> ${escapeHTML(record.principalName)}</span>
+            <span><strong>School Mobile:</strong> ${escapeHTML(record.schoolMobile)}</span>
+          </div>
+        </div>
+
+        <h3 style="text-align: center; font-family: 'DM Serif Display', serif; color: #0f5a95; font-size: 1.5rem; margin-bottom: 25px;">Academic Performance Ledger</h3>
+
+        ${buildStudentGrid(record)}
+
+        <table style="width: 100%; border-collapse: collapse; margin: 25px 0; border: 1px solid #e2e8f0;">
+          <thead>
+            <tr style="background: #0f5a95; color: white;">
+              <th style="padding: 12px; text-align: left; padding-left: 20px;">Subject Details</th>
+              <th style="padding: 12px; width: 100px; text-align: center;">Marks</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${marksRows}
+          </tbody>
+        </table>
+
+        <div style="display: flex; gap: 20px; margin-top: 30px;">
+          <div style="flex: 1.5; background: #f8fbff; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div><small>Max Marks</small><br><span style="font-size: 1.2rem; color: #0f5a95;">${formatNumber(record.totalMax)}</span></div>
+            <div><small>Obtained</small><br><span style="font-size: 1.2rem; color: #0f5a95;">${formatNumber(record.obtained)}</span></div>
+            <div><small>Percentage</small><br><span style="font-size: 1.2rem; color: #0f5a95;">${Number(record.percent || 0).toFixed(2)}%</span></div>
+            <div><small>Grade</small><br><span style="font-size: 1.2rem; color: #0f5a95;">${escapeHTML(record.grade)}</span></div>
+          </div>
+          <div style="flex: 1; border: 2px solid #0f5a95; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px;">
+            <p style="margin: 0; font-size: 0.75rem; text-transform: uppercase;">Final Status</p>
+            <h2 style="margin: 5px 0; font-size: 2rem; color: ${record.result === "PASS" ? "#059669" : "#dc2626"}; font-family: 'DM Serif Display', serif;">${record.result}</h2>
+            <p style="margin: 0; font-size: 0.75rem;">Session ${record.session}</p>
+          </div>
+        </div>
+
+        <div style="margin-top: 50px; display: flex; justify-content: space-between; align-items: flex-end;">
+          <div style="font-size: 0.8rem; color: #64748b;">
+            Issued on: ${new Date(record.createdAt).toLocaleDateString()}<br>
+            System Generated Academic Transcript
+          </div>
+          <div style="text-align: center; border-top: 1.5px solid #0f172a; min-width: 180px; padding-top: 5px;">
+            <strong style="font-size: 0.75rem; text-transform: uppercase;">Principal Signature</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
-function showError(message) {
-  const error = document.getElementById("previewError");
-  const content = document.getElementById("previewContent");
-  error.textContent = message;
-  error.classList.remove("hidden");
-  content.innerHTML = "";
-  document.getElementById("printBtn").disabled = true;
+async function downloadAsPDF(record) {
+  const element = document.getElementById(`printable-${record.id}`);
+  if (!element) return;
+
+  const btn = document.getElementById("downloadPdfBtn");
+  if (btn) btn.innerText = "Generating...";
+
+  try {
+    const opt = {
+      margin: 0,
+      filename: `${record.studentName}_Result.pdf`,
+      image: { type: 'jpeg', quality: 1 },
+      html2canvas: { 
+        scale: 2,
+        useCORS: true,
+        letterRendering: true,
+        scrollY: 0,
+        scrollX: 0
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // Create a worker to handle the conversion
+    const worker = html2pdf().set(opt).from(element);
+    await worker.save();
+    
+  } catch (err) {
+    console.error("PDF Export failed:", err);
+    alert("PDF generation failed. Using browser print instead.");
+    window.print();
+  } finally {
+    if (btn) btn.innerText = "Download PDF";
+  }
 }
 
 function initPreview() {
@@ -266,38 +178,38 @@ function initPreview() {
   const recordId = params.get("id");
   const shouldPrint = params.get("print") === "1";
   const session = parseSession();
-  const templateId = document.body.dataset.templateId || "template-1";
 
   if (!recordId) {
-    showError("Missing record ID. Please open preview from history.");
+    document.getElementById("previewError").classList.remove("hidden");
+    document.getElementById("errorMsg").textContent = "No Record ID found.";
     return;
   }
 
   if (!session?.email) {
-    showError("Login session not found. Please login again from dashboard.");
+    document.getElementById("previewError").classList.remove("hidden");
+    document.getElementById("errorMsg").textContent = "Session expired. Please login.";
     return;
   }
 
-  const record = getRecords().find((item) => item.id === recordId && item.ownerEmail === session.email);
+  const record = getRecords().find(r => r.id === recordId && r.ownerEmail === session.email);
   if (!record) {
-    showError("Result record not found for this school account.");
+    document.getElementById("previewError").classList.remove("hidden");
+    document.getElementById("errorMsg").textContent = "Result record not found.";
     return;
   }
 
-  document.getElementById("previewContent").innerHTML = createCertificateHTML(record, templateId);
-  document.title = `${record.studentName || "Result"} | ${templateId.toUpperCase()}`;
+  // Inject Template 1 (Professional Side-Logo Engine)
+  document.getElementById("previewContent").innerHTML = templateOne(record);
+  document.title = `${record.studentName} - Official Result`;
+
+  // Setup PDF button
+  document.getElementById("downloadPdfBtn")?.addEventListener("click", () => downloadAsPDF(record));
 
   if (shouldPrint) {
-    window.setTimeout(() => window.print(), 250);
+    setTimeout(() => window.print(), 500);
   }
 }
 
-function initEvents() {
-  document.getElementById("printBtn").addEventListener("click", () => window.print());
-  document.getElementById("openDashboardBtn").addEventListener("click", () => {
-    window.location.href = "index.html";
-  });
-}
+document.getElementById("printBtn")?.addEventListener("click", () => window.print());
 
-initEvents();
 initPreview();
