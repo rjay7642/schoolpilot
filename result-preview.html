@@ -3,29 +3,81 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Result Preview | SchoolPilot</title>
+  <title>Print Service | SchoolPilot</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Ultra-lean, print-focused reset specifically for this page */
+    body {
+      background: #f8fbff;
+      margin: 0;
+      padding: 0;
+    }
+    .print-shell {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    .print-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      background: white;
+      padding: 15px 25px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      border: 1px solid #e2e8f0;
+    }
+    .print-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .print-brand img {
+      width: 40px;
+      height: 40px;
+    }
+    .print-brand h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #0f172a;
+    }
+    
+    @media print {
+      body { background: white; }
+      .print-controls, .bg-orb { display: none !important; }
+      .print-shell { margin: 0; padding: 0; width: 100%; }
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+    }
+  </style>
 </head>
-<body class="preview-page" data-template-id="template-1">
+<body class="preview-page">
   <div class="bg-orb orb-1"></div>
   <div class="bg-orb orb-2"></div>
 
-  <main class="container preview-shell">
-    <section class="panel preview-panel active">
-      <div class="preview-topbar">
-        <a href="index.html" class="btn btn-ghost">Back to Dashboard</a>
-        <div class="result-actions">
-          <button type="button" class="btn btn-soft" id="openDashboardBtn">Open Dashboard</button>
-          <button type="button" class="btn btn-primary" id="printBtn">Print</button>
-        </div>
+  <div class="print-shell">
+    <div class="print-controls no-print">
+      <div class="print-brand">
+        <img src="assets/logo.png" alt="Logo">
+        <h2>SchoolPilot Print System</h2>
       </div>
-      <section id="previewContent" class="result-preview"></section>
-      <p id="previewError" class="preview-error hidden"></p>
-    </section>
-  </main>
+      <div style="display: flex; gap: 10px;">
+        <a href="index.html" class="btn btn-ghost">Dashboard</a>
+        <button id="printBtn" class="btn btn-primary">Print Now (A4)</button>
+      </div>
+    </div>
+
+    <div id="previewContent">
+      <!-- Logic will inject templates here -->
+    </div>
+    <div id="previewError" class="preview-error hidden" style="text-align: center; padding: 50px;"></div>
+  </div>
 
   <script src="result-templates.js"></script>
 </body>

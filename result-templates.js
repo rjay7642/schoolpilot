@@ -79,18 +79,18 @@ function templateOne(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML
       <div class="cert-watermark">${schoolTitle}</div>
       <div class="cert-watermark wm-2">${schoolTitle}</div>
       <div class="cert-ribbon">Academic Session ${escapeHTML(record.session || "")}</div>
-      <div class="cert-header">
-        <p class="cert-exam-tag">${escapeHTML((record.examType || "FINAL EXAMINATION").toUpperCase())}</p>
-        <div class="cert-branding">
+      <div class="cert-header" style="text-align: left;">
+        <p class="cert-exam-tag" style="margin-left: 0; margin-right: auto;">${escapeHTML((record.examType || "FINAL EXAMINATION").toUpperCase())}</p>
+        <div class="cert-branding" style="justify-content: flex-start;">
           ${logoHTML}
           <div class="cert-brand-copy">
             <p class="cert-kicker">Certified Academic Transcript</p>
-            <h2 class="cert-title">${schoolTitle}</h2>
+            <h2 class="cert-title" style="text-align: left;">${schoolTitle}</h2>
           </div>
         </div>
-        <p class="cert-sub">${escapeHTML(record.location || "")}</p>
-        <p class="cert-sub">Principal: ${escapeHTML(record.principalName || "")} | School Mobile: ${escapeHTML(record.schoolMobile || "")}</p>
-        <h3>Official Result-Certificate</h3>
+        <p class="cert-sub" style="text-align: left;">${escapeHTML(record.location || "")}</p>
+        <p class="cert-sub" style="text-align: left;">Principal: ${escapeHTML(record.principalName || "")} | School Mobile: ${escapeHTML(record.schoolMobile || "")}</p>
+        <h3 style="text-align: left; margin-left: 0;">Official Result-Certificate</h3>
       </div>
 
       ${buildStudentGrid(record)}
@@ -180,17 +180,17 @@ function templateFour(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTM
     <div class="certificate print-area template-certificate template-4" id="printable-${record.id}">
       ${logoWatermarkHTML}
       <div class="t4-corner"></div>
-      <div class="t4-head">
-        <p class="cert-exam-tag">${escapeHTML((record.examType || "FINAL EXAMINATION").toUpperCase())}</p>
+      <div class="t4-head" style="text-align: left;">
+        <p class="cert-exam-tag" style="margin-left: 0; margin-right: auto;">${escapeHTML((record.examType || "FINAL EXAMINATION").toUpperCase())}</p>
         <p class="t4-kicker">Institutional Certificate</p>
-        <div class="t4-brand-row">
+        <div class="t4-brand-row" style="justify-content: flex-start;">
           ${logoHTML}
-          <h2>${schoolTitle}</h2>
+          <h2 style="text-align: left;">${schoolTitle}</h2>
         </div>
-        <p class="t4-sub">${escapeHTML(record.location || "")}</p>
+        <p class="t4-sub" style="text-align: left;">${escapeHTML(record.location || "")}</p>
       </div>
 
-      <h3 class="template-title">Official Student Marksheet</h3>
+      <h3 class="template-title" style="text-align: left;">Official Student Marksheet</h3>
       ${buildStudentGrid(record)}
 
       <table class="marks-table">
