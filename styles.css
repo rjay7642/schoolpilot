@@ -4023,7 +4023,7 @@ select {
   @media print {
     @page {
       size: A4 portrait;
-      margin: 10mm;
+      margin: 5mm;
     }
 
     body {
@@ -4050,10 +4050,32 @@ select {
       left: 0;
       right: 0;
       top: 0;
-      margin: 0 auto;
-      width: 190mm;
+      margin: 0 auto !important;
+      width: 195mm !important;
       box-shadow: none !important;
       page-break-inside: avoid;
+      transform: scale(0.97);
+      transform-origin: top center;
+    }
+
+    /* Tighten for one-page fit without breaking design */
+    .certificate {
+      padding: 14px !important;
+    }
+    .cert-header {
+      margin-bottom: 12px !important;
+    }
+    .student-grid-card {
+      margin-bottom: 8px !important;
+    }
+    .marks-table {
+      margin-top: 10px !important;
+    }
+    .summary-strip {
+      margin-top: 8px !important;
+    }
+    .cert-foot {
+      margin-top: 12px !important;
     }
   }
 
