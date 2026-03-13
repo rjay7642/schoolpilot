@@ -72,14 +72,15 @@ function buildFooter(record) {
   `;
 }
 
-function templateOne(record, schoolTitle, logoHTML, marksRows) {
+function templateOne(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML) {
   return `
     <div class="certificate print-area template-certificate template-1" id="printable-${record.id}">
+      ${logoWatermarkHTML}
       <div class="cert-watermark">${schoolTitle}</div>
       <div class="cert-watermark wm-2">${schoolTitle}</div>
       <div class="cert-ribbon">Academic Session ${escapeHTML(record.session || "")}</div>
-
       <div class="cert-header">
+        <p class="cert-exam-tag">${escapeHTML((record.examType || "FINAL EXAMINATION").toUpperCase())}</p>
         <div class="cert-branding">
           ${logoHTML}
           <div class="cert-brand-copy">
@@ -105,11 +106,13 @@ function templateOne(record, schoolTitle, logoHTML, marksRows) {
   `;
 }
 
-function templateTwo(record, schoolTitle, logoHTML, marksRows) {
+function templateTwo(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML) {
   return `
     <div class="certificate print-area template-certificate template-2" id="printable-${record.id}">
+      ${logoWatermarkHTML}
       <div class="template-accent"></div>
       <div class="t2-head">
+        <p class="cert-exam-tag">${escapeHTML((record.examType || "FINAL EXAMINATION").toUpperCase())}</p>
         <div class="t2-brand">
           ${logoHTML}
           <div>
@@ -138,10 +141,12 @@ function templateTwo(record, schoolTitle, logoHTML, marksRows) {
   `;
 }
 
-function templateThree(record, schoolTitle, logoHTML, marksRows) {
+function templateThree(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML) {
   return `
     <div class="certificate print-area template-certificate template-3" id="printable-${record.id}">
+      ${logoWatermarkHTML}
       <div class="t3-head">
+        <p class="cert-exam-tag">${escapeHTML((record.examType || "FINAL EXAMINATION").toUpperCase())}</p>
         <div class="t3-left">
           ${logoHTML}
           <div>
@@ -170,11 +175,13 @@ function templateThree(record, schoolTitle, logoHTML, marksRows) {
   `;
 }
 
-function templateFour(record, schoolTitle, logoHTML, marksRows) {
+function templateFour(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML) {
   return `
     <div class="certificate print-area template-certificate template-4" id="printable-${record.id}">
+      ${logoWatermarkHTML}
       <div class="t4-corner"></div>
       <div class="t4-head">
+        <p class="cert-exam-tag">${escapeHTML((record.examType || "FINAL EXAMINATION").toUpperCase())}</p>
         <p class="t4-kicker">Institutional Certificate</p>
         <div class="t4-brand-row">
           ${logoHTML}
@@ -197,10 +204,12 @@ function templateFour(record, schoolTitle, logoHTML, marksRows) {
   `;
 }
 
-function templateFive(record, schoolTitle, logoHTML, marksRows) {
+function templateFive(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML) {
   return `
     <div class="certificate print-area template-certificate template-5" id="printable-${record.id}">
+      ${logoWatermarkHTML}
       <div class="t5-band">
+        <p class="cert-exam-tag">${escapeHTML((record.examType || "FINAL EXAMINATION").toUpperCase())}</p>
         <div class="t5-brand">
           ${logoHTML}
           <div>
@@ -231,13 +240,16 @@ function createCertificateHTML(record, templateId) {
   const logoHTML = logoSource
     ? `<img class="cert-school-logo" src="${escapeHTML(logoSource)}" alt="School logo" />`
     : "";
+  const logoWatermarkHTML = logoSource
+    ? `<img class="cert-logo-watermark" src="${escapeHTML(logoSource)}" alt="Watermark" />`
+    : "";
   const marksRows = buildMarksRows(record.subjectMarks || []);
 
-  if (templateId === "template-2") return templateTwo(record, schoolTitle, logoHTML, marksRows);
-  if (templateId === "template-3") return templateThree(record, schoolTitle, logoHTML, marksRows);
-  if (templateId === "template-4") return templateFour(record, schoolTitle, logoHTML, marksRows);
-  if (templateId === "template-5") return templateFive(record, schoolTitle, logoHTML, marksRows);
-  return templateOne(record, schoolTitle, logoHTML, marksRows);
+  if (templateId === "template-2") return templateTwo(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML);
+  if (templateId === "template-3") return templateThree(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML);
+  if (templateId === "template-4") return templateFour(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML);
+  if (templateId === "template-5") return templateFive(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML);
+  return templateOne(record, schoolTitle, logoHTML, marksRows, logoWatermarkHTML);
 }
 
 function showError(message) {

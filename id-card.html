@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ID Card Generator | SchoolPilot Premium</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Specific styles for ID Card Generator page */
+    .id-card-preview-container {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      padding: 20px;
+      align-items: center;
+    }
+
+    .id-card-stage {
+      perspective: 1000px;
+    }
+
+    .id-card-wrapper {
+      width: 320px;
+      height: 500px;
+      position: relative;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .id-card-wrapper.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .id-card-front, .id-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      background: white;
+    }
+
+    .id-card-back {
+      transform: rotateY(180deg);
+    }
+
+    .id-print-composite {
+      display: none;
+    }
+
+    /* Print Logic */
+    @media print {
+      body { background: white !important; }
+      body * { visibility: hidden; }
+      .id-print-composite, .id-print-composite * { visibility: visible; }
+      .id-print-composite {
+        display: flex !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        justify-content: center;
+        gap: 40px;
+        padding-top: 20mm;
+      }
+      .id-card-front, .id-card-back {
+        position: relative !important;
+        transform: none !important;
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        width: 320px !important;
+        height: 500px !important;
+        display: flex !important;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="dashboard-page">
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+
+  <div class="id-print-composite" id="idPrintComposite">
+    <div id="printFront" class="id-card-front"></div>
+    <div id="printBack" class="id-card-back"></div>
+  </div>
+
+  <header class="site-header">
+    <nav class="nav container glass-panel">
+      <div class="logo-wrap">
+        <img class="brand-logo" src="assets/logo.png" alt="SchoolPilot logo" />
+        <div>
+          <p class="logo">SchoolPilot</p>
+          <small>ID Card Intelligence</small>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <a href="index.html" class="btn btn-ghost">Dashboard</a>
+        <button class="btn btn-primary" id="generateIdBtn">Generate & View ID</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="panel active">
+      <div class="generate-layout">
+        <div class="id-card-generator-form">
+          <h3 class="panel-title">Student Identity Details</h3>
+          <form id="idCardForm">
+            <div class="grid-2">
+              <label>Student Name<input required name="studentName" placeholder="Full Name" /></label>
+              <label>Admission No.<input required name="admissionNo" placeholder="ADM-001" /></label>
+              <label>Class/Section<input required name="classSection" placeholder="10th - A" /></label>
+              <label>Roll Number<input required name="rollNo" placeholder="25" /></label>
+              <label>Date of Birth<input required name="dob" type="date" /></label>
+              <label>Blood Group<input name="bloodGroup" placeholder="O+ve" /></label>
+              <label>Father's Name<input required name="fatherName" /></label>
+              <label>Contact Number<input required name="phone" type="tel" /></label>
+              <label class="full">Residence Address<textarea required name="address" rows="2"></textarea></label>
+              <label class="full">Valid Up To<input required name="validity" placeholder="March 2026" /></label>
+              <label class="full">Student Photo
+                <input type="file" id="photoInput" accept="image/*" />
+              </label>
+            </div>
+          </form>
+        </div>
+
+        <aside class="live-preview-card">
+          <p class="live-preview-tag">Premium ID Preview (Click to Flip)</p>
+          <div class="id-card-preview-container print-area">
+            <div class="id-card-stage">
+              <div class="id-card-wrapper" id="idCardWrapper">
+                <!-- Front Side -->
+                <div class="id-card-front" id="idFront">
+                  <!-- Content injected by JS -->
+                </div>
+                <!-- Back Side -->
+                <div class="id-card-back" id="idBack">
+                  <!-- Content injected by JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="text-center mt-1"><small>Dual-side luxury printable design</small></p>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="id-card.js"></script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-﻿const STORAGE_KEYS = {
+const STORAGE_KEYS = {
   users: "schoolpilot_users",
   session: "schoolpilot_session",
   records: "schoolpilot_records",
@@ -73,7 +73,8 @@ const els = {
   faqList: document.getElementById("faqList"),
   ctaRegisterBtn: document.getElementById("ctaRegisterBtn"),
   ctaLoginBtn: document.getElementById("ctaLoginBtn"),
-  floatingHelpBtn: document.getElementById("floatingHelpBtn")
+  authOverlay: document.getElementById("authOverlay"),
+  closeAuthBtn: document.getElementById("closeAuthBtn")
 };
 
 let currentUser = null;
@@ -174,7 +175,13 @@ async function readSchoolLogoFromForm(form, preserveIfEmpty = "") {
 function showAuthCard(type) {
   els.registerCard.classList.toggle("hidden", type !== "register");
   els.loginCard.classList.toggle("hidden", type !== "login");
-  window.scrollTo({ top: document.getElementById("authArea").offsetTop - 16, behavior: "smooth" });
+  els.authOverlay.classList.remove("hidden");
+  document.body.style.overflow = "hidden"; // Prevent background scroll
+}
+
+function closeAuthModal() {
+  els.authOverlay.classList.add("hidden");
+  document.body.style.overflow = "";
 }
 
 function bindTopButtons() {
@@ -406,31 +413,36 @@ function updateLivePreview(metrics = null) {
     `
     )
     .join("");
+  const logoWatermarkHTML = currentUser?.schoolLogo
+    ? `<img class="cert-logo-watermark" src="${escapeHTML(currentUser.schoolLogo)}" alt="Watermark" />`
+    : "";
 
   els.liveResultPreview.innerHTML = `
-    <div class="certificate template-certificate template-1 mini-certificate">
-      <div class="cert-header">
-        <div class="cert-branding">
-          ${logoHtml}
-          <div class="cert-brand-copy">
-            <p class="cert-kicker">Certified Academic Transcript</p>
-            <h2 class="cert-title">${schoolTitle}</h2>
+      <div class="certificate template-certificate template-1 mini-certificate">
+        ${logoWatermarkHTML}
+        <div class="cert-header">
+          <p class="cert-exam-tag">${escapeHTML((formData.examType || "FINAL EXAMINATION").toUpperCase())}</p>
+          <div class="cert-branding">
+            ${logoHtml}
+            <div class="cert-brand-copy">
+              <p class="cert-kicker">Certified Academic Transcript</p>
+              <h2 class="cert-title">${schoolTitle}</h2>
+            </div>
           </div>
+          <p class="cert-sub">${location}</p>
+          <p class="cert-sub">Principal: ${principalName} | School Mobile: ${schoolMobile}</p>
+          <h3>Official Result-Certificate</h3>
         </div>
-        <p class="cert-sub">${location}</p>
-        <p class="cert-sub">Principal: ${principalName} | School Mobile: ${schoolMobile}</p>
-        <h3>Official Result-Certificate</h3>
-      </div>
 
-      <div class="student-grid student-grid-card">
-        <p><strong>Student Name:</strong> ${escapeHTML(formData.studentName || "Student Name")}</p>
-        <p><strong>Father's Name:</strong> ${escapeHTML(formData.fatherName || "-")}</p>
-        <p><strong>Mother's Name:</strong> ${escapeHTML(formData.motherName || "-")}</p>
-        <p><strong>Class:</strong> ${escapeHTML(formData.className || "-")}</p>
-        <p><strong>Roll Number:</strong> ${escapeHTML(formData.rollNumber || "-")}</p>
-        <p><strong>Student Phone:</strong> ${escapeHTML(formData.studentPhone || "-")}</p>
-        <p><strong>Session:</strong> ${escapeHTML(formData.session || "-")}</p>
-      </div>
+        <div class="student-grid student-grid-card">
+          <p><strong>Student Name:</strong> ${escapeHTML(formData.studentName || "Student Name")}</p>
+          <p><strong>Father's Name:</strong> ${escapeHTML(formData.fatherName || "-")}</p>
+          <p><strong>Mother's Name:</strong> ${escapeHTML(formData.motherName || "-")}</p>
+          <p><strong>Class:</strong> ${escapeHTML(formData.className || "-")}</p>
+          <p><strong>Roll Number:</strong> ${escapeHTML(formData.rollNumber || "-")}</p>
+          <p><strong>Student Phone:</strong> ${escapeHTML(formData.studentPhone || "-")}</p>
+          <p><strong>Session:</strong> ${escapeHTML(formData.session || "-")}</p>
+        </div>
 
       <table class="marks-table">
         <thead><tr><th>Subject</th><th>Obtained Marks</th></tr></thead>
@@ -559,7 +571,7 @@ function buildHistoryCard(record) {
     <div class="history-item">
       <div>
         <strong>${escapeHTML(record.studentName)}</strong> (${escapeHTML(record.className)}) - Roll ${escapeHTML(record.rollNumber)}<br>
-        <small>${new Date(record.createdAt).toLocaleString()} | ${record.percent.toFixed(2)}% | ${escapeHTML(record.result)} | ${escapeHTML(template.name)}</small>
+        <small>${new Date(record.createdAt).toLocaleString()} | ${escapeHTML(record.examType || "Final Exam")} | ${record.percent.toFixed(2)}% | ${escapeHTML(record.result)} | ${escapeHTML(template.name)}</small>
       </div>
       <div class="history-actions">
         <button class="btn btn-ghost" data-action="templates" data-id="${record.id}">Templates</button>
@@ -601,11 +613,9 @@ function renderHistory(nameFilter = "", classFilter = "", resultFilter = "") {
       .map(buildHistoryCard)
       .join("");
 
-  window.setTimeout(() => {
-    if (renderId !== historyRenderVersion) return;
-    els.historyList.classList.remove("is-loading");
-    els.historyList.innerHTML = historyMarkup;
-  }, 140);
+  if (renderId !== historyRenderVersion) return;
+  els.historyList.classList.remove("is-loading");
+  els.historyList.innerHTML = historyMarkup;
 }
 
 function createHistorySkeleton(items = 3) {
@@ -652,6 +662,7 @@ function showDashboard() {
   [
     "home",
     "features",
+    "idShowcase",
     "showcase",
     "processSection",
     "mediaBandSection",
@@ -662,8 +673,7 @@ function showDashboard() {
     "securitySection",
     "faqSection",
     "ctaSplitSection",
-    "authArea",
-    "floatingHelpBtn"
+    "authOverlay"
   ].forEach((id) => document.getElementById(id)?.classList.add("hidden"));
   els.dashboard.classList.remove("hidden");
   renderProfile();
@@ -676,6 +686,7 @@ function showLanding() {
   [
     "home",
     "features",
+    "idShowcase",
     "showcase",
     "processSection",
     "mediaBandSection",
@@ -686,10 +697,10 @@ function showLanding() {
     "securitySection",
     "faqSection",
     "ctaSplitSection",
-    "authArea",
-    "floatingHelpBtn"
+    "authArea"
   ].forEach((id) => document.getElementById(id)?.classList.remove("hidden"));
   els.dashboard.classList.add("hidden");
+  closeAuthModal();
   closeTemplatePicker();
 }
 
@@ -735,6 +746,16 @@ function hideProfileEditForm() {
 
 function initEvents() {
   bindTopButtons();
+  
+  if (els.closeAuthBtn) {
+    els.closeAuthBtn.addEventListener("click", closeAuthModal);
+  }
+
+  if (els.authOverlay) {
+    els.authOverlay.addEventListener("click", (e) => {
+      if (e.target === els.authOverlay) closeAuthModal();
+    });
+  }
 
   if (els.certificateForm) {
     els.certificateForm.addEventListener("input", (event) => {
@@ -750,6 +771,13 @@ function initEvents() {
 
   if (els.ctaLoginBtn) {
     els.ctaLoginBtn.addEventListener("click", () => showAuthCard("login"));
+  }
+
+  const openIdCardBtn = document.getElementById("openIdCardBtn");
+  if (openIdCardBtn) {
+    openIdCardBtn.addEventListener("click", () => {
+      window.location.href = "id-card.html";
+    });
   }
 
   els.registerForm.addEventListener("submit", async (event) => {
@@ -861,6 +889,7 @@ function initEvents() {
       rollNumber: formData.rollNumber,
       studentPhone: formData.studentPhone,
       session: formData.session,
+      examType: formData.examType,
       totalMax,
       obtained,
       percent,
