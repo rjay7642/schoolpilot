@@ -2641,10 +2641,10 @@ select {
 }
 
 .template-certificate.template-4 .t4-head {
-  text-align: center;
+  text-align: left; /* Side aligned */
   border: 1px solid #edc6d5;
   border-radius: 12px;
-  padding: 12px;
+  padding: 12px 18px;
   background: linear-gradient(160deg, #fff8fb, #fff3f8);
 }
 
@@ -2657,8 +2657,9 @@ select {
 }
 
 .template-certificate.template-4 .t4-brand-row {
-  display: inline-flex;
+  display: flex; /* side by side */
   align-items: center;
+  justify-content: flex-start;
   gap: 12px;
   margin-top: 6px;
 }
@@ -4060,30 +4061,41 @@ select {
 
     /* Tighten for one-page fit with side logo */
     .certificate {
-      padding: 14px !important;
+      padding: 12px !important;
+      max-height: 285mm !important; /* Force stay in A4 */
     }
-    .cert-header {
-      margin-bottom: 12px !important;
+    .cert-header, .t2-head, .t3-head, .t4-head, .t5-band {
+      margin-bottom: 10px !important;
       text-align: left !important;
+      padding: 8px 12px !important;
     }
-    .cert-branding {
+    .cert-branding, .t2-brand, .t4-brand-row, .t5-brand {
       justify-content: flex-start !important;
+      display: flex !important;
     }
     .cert-exam-tag {
       margin-left: 0 !important;
       margin-right: auto !important;
+      margin-bottom: 4px !important;
     }
     .student-grid-card {
-      margin-bottom: 8px !important;
+      margin-bottom: 6px !important;
+      padding: 8px !important;
     }
     .marks-table {
-      margin-top: 10px !important;
-    }
-    .summary-strip {
       margin-top: 8px !important;
     }
+    .marks-table th, .marks-table td {
+      padding: 5px !important;
+      font-size: 0.85rem !important;
+    }
+    .summary-strip {
+      margin-top: 6px !important;
+      padding: 6px !important;
+    }
     .cert-foot {
-      margin-top: 12px !important;
+      margin-top: 10px !important;
+      padding-top: 8px !important;
     }
   }
 
