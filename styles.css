@@ -4023,7 +4023,7 @@ select {
   @media print {
     @page {
       size: A4 portrait;
-      margin: 10mm;
+      margin: 8mm; /* Reduced margin */
     }
 
     body {
@@ -4056,46 +4056,68 @@ select {
       page-break-inside: avoid;
     }
 
-    /* Tighten everything for one-page fit */
+    /* REMOVE MIDDLE LOGO WATERMARK IN PRINT */
+    .cert-logo-watermark, .cert-watermark {
+      display: none !important;
+    }
+
+    /* AGGRESSIVE TIGHTENING FOR ONE-PAGE FIT */
     .certificate {
-      padding: 12px !important;
-      border-width: 4px !important;
+      padding: 10px !important;
+      border-width: 3px !important;
+      margin: 0 !important;
     }
     .cert-header {
-      padding: 12px 10px 10px !important;
-      margin-bottom: 12px !important;
+      padding: 8px !important;
+      margin-bottom: 8px !important;
     }
     .cert-title {
-      font-size: 2rem !important;
+      font-size: 1.75rem !important;
+      margin: 0 !important;
     }
     .cert-school-logo {
-      width: 65px !important;
-      height: 65px !important;
+      width: 55px !important;
+      height: 55px !important;
+    }
+    .cert-exam-tag {
+      margin-bottom: 5px !important;
+      padding: 2px 14px !important;
+      font-size: 0.6rem !important;
     }
     .student-grid-card {
-      padding: 8px !important;
-      margin-bottom: 10px !important;
-    }
-    .marks-table th, .marks-table td {
       padding: 6px !important;
-      font-size: 0.85rem !important;
+      margin-bottom: 6px !important;
+      gap: 4px 10px !important;
     }
-    .summary-strip {
-      margin-top: 10px !important;
-      padding: 8px !important;
-      gap: 6px !important;
-    }
-    .summary-strip p {
-      padding: 6px 4px !important;
-      font-size: 0.85rem !important;
-    }
-    .cert-foot {
-      margin-top: 12px !important;
-      padding-top: 10px !important;
+    .student-grid p {
+      font-size: 0.8rem !important;
     }
     .template-title {
-      margin: 10px 0 !important;
-      font-size: 0.95rem !important;
+      margin: 6px 0 !important;
+      font-size: 0.85rem !important;
+    }
+    .marks-table {
+      margin-top: 8px !important;
+    }
+    .marks-table th, .marks-table td {
+      padding: 4px !important;
+      font-size: 0.8rem !important;
+    }
+    .summary-strip {
+      margin-top: 8px !important;
+      padding: 6px !important;
+      gap: 5px !important;
+    }
+    .summary-strip p {
+      padding: 5px 3px !important;
+      font-size: 0.8rem !important;
+    }
+    .cert-foot {
+      margin-top: 10px !important;
+      padding-top: 8px !important;
+    }
+    .cert-foot p {
+      font-size: 0.8rem !important;
     }
   }
 
