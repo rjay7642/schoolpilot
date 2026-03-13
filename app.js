@@ -700,16 +700,18 @@ function setActiveTab(id) {
 
 function restoreSession() {
   const session = parseSession();
-  if (!session?.email) return;
+  if (!session?.email) return false;
 
   const found = getUsers().find((user) => user.email === session.email);
   if (!found) {
     clearSession();
-    return;
+    return false;
   }
 
   currentUser = found;
   showDashboard();
+  closeAuthModal(); // Ensure overlay is gone
+  return true;
 }
 
 function resetGeneratorForm() {
@@ -1089,8 +1091,11 @@ function initLandingEffects() {
 
 initSubjectPool();
 initEvents();
-restoreSession();
-showAuthCard("login");
+const sessionRestored = restoreSession();
+if (!sessionRestored) {
+  // Option: showAuthCard("login"); if you want it to pop up on landing
+  // For now, let's NOT trigger it automatically to avoid the "keeps coming" issue
+}
 updateLivePreview({ obtained: 0, totalMax: 0, percent: 0 });
 initLandingEffects();
 initLandingEnhancements();
