@@ -9,6 +9,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <style>
+    :root {
+      --id-card-width: 305px;
+      --id-card-height: 480px;
+    }
+
     /* Specific styles for ID Card Generator page */
     .id-card-preview-container {
       display: flex;
@@ -23,8 +28,8 @@
     }
 
     .id-card-wrapper {
-      width: 320px;
-      height: 500px;
+      width: var(--id-card-width);
+      height: var(--id-card-height);
       position: relative;
       transition: transform 0.6s;
       transform-style: preserve-3d;
@@ -76,8 +81,8 @@
         transform: none !important;
         box-shadow: none !important;
         border: 1px solid #ddd !important;
-        width: 320px !important;
-        height: 500px !important;
+        width: var(--id-card-width) !important;
+        height: var(--id-card-height) !important;
         display: flex !important;
         page-break-inside: avoid;
       }
