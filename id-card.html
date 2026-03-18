@@ -10,8 +10,11 @@
   <link rel="stylesheet" href="styles.css" />
   <style>
     :root {
-      --id-card-width: 305px;
-      --id-card-height: 480px;
+      --id-card-base-width: 320px;
+      --id-card-base-height: 500px;
+      --id-card-scale: 0.64;
+      --id-card-width: calc(var(--id-card-base-width) * var(--id-card-scale));
+      --id-card-height: calc(var(--id-card-base-height) * var(--id-card-scale));
     }
 
     /* Specific styles for ID Card Generator page */
@@ -36,15 +39,29 @@
       cursor: pointer;
     }
 
+    .id-card-side {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      transform-style: preserve-3d;
+    }
+
+    .id-card-side-back {
+      transform: rotateY(180deg);
+    }
+
     .id-card-wrapper.flipped {
       transform: rotateY(180deg);
     }
 
     .id-card-front, .id-card-back {
       position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
+      top: 0;
+      left: 0;
+      width: var(--id-card-base-width);
+      height: var(--id-card-base-height);
+      transform: scale(var(--id-card-scale));
+      transform-origin: top left;
       border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 20px 40px rgba(0,0,0,0.3);
@@ -53,8 +70,10 @@
       background: white;
     }
 
-    .id-card-back {
-      transform: rotateY(180deg);
+    .id-card-print-shell {
+      width: var(--id-card-width);
+      height: var(--id-card-height);
+      position: relative;
     }
 
     .id-print-composite {
@@ -73,17 +92,25 @@
         top: 0;
         width: 100%;
         justify-content: center;
-        gap: 40px;
-        padding-top: 20mm;
+        gap: 10mm;
+        padding-top: 15mm;
       }
       .id-card-front, .id-card-back {
-        position: relative !important;
-        transform: none !important;
+        position: absolute !important;
+        top: 0;
+        left: 0;
         box-shadow: none !important;
         border: 1px solid #ddd !important;
+        width: var(--id-card-base-width) !important;
+        height: var(--id-card-base-height) !important;
+        transform: scale(var(--id-card-scale)) !important;
+        display: flex !important;
+      }
+      .id-card-print-shell {
+        display: block !important;
         width: var(--id-card-width) !important;
         height: var(--id-card-height) !important;
-        display: flex !important;
+        position: relative !important;
         page-break-inside: avoid;
       }
     }
@@ -94,8 +121,12 @@
   <div class="bg-orb orb-2"></div>
 
   <div class="id-print-composite" id="idPrintComposite">
-    <div id="printFront" class="id-card-front"></div>
-    <div id="printBack" class="id-card-back"></div>
+    <div class="id-card-print-shell">
+      <div id="printFront" class="id-card-front"></div>
+    </div>
+    <div class="id-card-print-shell">
+      <div id="printBack" class="id-card-back"></div>
+    </div>
   </div>
 
   <header class="site-header">
@@ -143,13 +174,17 @@
           <div class="id-card-preview-container print-area">
             <div class="id-card-stage">
               <div class="id-card-wrapper" id="idCardWrapper">
-                <!-- Front Side -->
-                <div class="id-card-front" id="idFront">
-                  <!-- Content injected by JS -->
+                <div class="id-card-side">
+                  <!-- Front Side -->
+                  <div class="id-card-front" id="idFront">
+                    <!-- Content injected by JS -->
+                  </div>
                 </div>
-                <!-- Back Side -->
-                <div class="id-card-back" id="idBack">
-                  <!-- Content injected by JS -->
+                <div class="id-card-side id-card-side-back">
+                  <!-- Back Side -->
+                  <div class="id-card-back" id="idBack">
+                    <!-- Content injected by JS -->
+                  </div>
                 </div>
               </div>
             </div>

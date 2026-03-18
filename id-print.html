@@ -10,8 +10,11 @@
   <link rel="stylesheet" href="styles.css" />
   <style>
     :root {
-      --id-card-width: 305px;
-      --id-card-height: 480px;
+      --id-card-base-width: 320px;
+      --id-card-base-height: 500px;
+      --id-card-scale: 0.64;
+      --id-card-width: calc(var(--id-card-base-width) * var(--id-card-scale));
+      --id-card-height: calc(var(--id-card-base-height) * var(--id-card-scale));
     }
 
     body {
@@ -30,7 +33,7 @@
 
     .id-print-layout {
       display: flex;
-      gap: 40px;
+      gap: 24px;
       justify-content: center;
       padding: 20px;
       background: white;
@@ -38,15 +41,25 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     }
 
-    /* Fixed sizes for printing */
-    .id-card-front, .id-card-back {
+    .id-card-shell {
       width: var(--id-card-width);
       height: var(--id-card-height);
+      position: relative;
+    }
+
+    /* Aadhaar-style vertical footprint with scaled inner design */
+    .id-card-front, .id-card-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: var(--id-card-base-width);
+      height: var(--id-card-base-height);
+      transform: scale(var(--id-card-scale));
+      transform-origin: top left;
       border-radius: 20px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      position: relative;
     }
 
     @media print {
@@ -61,15 +74,20 @@
         top: 0;
         box-shadow: none;
         padding: 0;
-        gap: 15mm;
+        gap: 8mm;
         margin: 0 auto;
         width: 100%;
         justify-content: center;
       }
-      .id-card-front, .id-card-back {
-        border: 1px solid #ddd;
+      .id-card-shell {
+        width: var(--id-card-width) !important;
+        height: var(--id-card-height) !important;
         position: relative !important;
         page-break-inside: avoid;
+      }
+      .id-card-front, .id-card-back {
+        border: 1px solid #ddd;
+        position: absolute !important;
       }
     }
   </style>
@@ -81,8 +99,12 @@
   </div>
 
   <div class="id-print-layout">
-    <div id="printFront" class="id-card-front"></div>
-    <div id="printBack" class="id-card-back"></div>
+    <div class="id-card-shell">
+      <div id="printFront" class="id-card-front"></div>
+    </div>
+    <div class="id-card-shell">
+      <div id="printBack" class="id-card-back"></div>
+    </div>
   </div>
 
   <script>
