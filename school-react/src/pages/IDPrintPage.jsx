@@ -300,7 +300,7 @@ export default function IDPrintPage() {
       <div className="print-navbar no-print">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <img
-            src="/logo.png"
+            src="logo.png"
             alt="SchoolPilot"
             style={{
               width: 40,

@@ -413,7 +413,7 @@ export default function LandingPage() {
 
       <nav className="nav">
         <div className="nav-logo">
-          <img src="/logo.png" alt="SchoolPilot" />
+          <img src="logo.png" alt="SchoolPilot" />
           <div className="nav-logo-text">
             <div className="name">SchoolPilot</div>
             <div className="sub">School Operations Suite</div>

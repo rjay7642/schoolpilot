@@ -113,7 +113,7 @@ export default function DashboardLayout() {
           <div className="sidebar-brand">
             <div className="school-logo-thumb brand-mark">
               <img
-                src="/logo.png"
+                src="logo.png"
                 alt="SchoolPilot"
               />
             </div>

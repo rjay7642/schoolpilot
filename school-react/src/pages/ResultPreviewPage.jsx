@@ -404,7 +404,7 @@ export default function ResultPreviewPage() {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <img
-            src="/logo.png"
+            src="logo.png"
             style={{
               width: 40,
               height: 40,
