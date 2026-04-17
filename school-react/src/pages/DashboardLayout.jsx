@@ -14,6 +14,7 @@ import {
   Search,
   Settings,
   User,
+  Coffee,
 } from 'lucide-react';
 import DashboardHome from './dashboard/DashboardHome.jsx';
 import GenerateCertificate from './dashboard/GenerateCertificate.jsx';
@@ -21,6 +22,7 @@ import HistoryTab from './dashboard/HistoryTab.jsx';
 import IDCardGenerator from './dashboard/IDCardGenerator.jsx';
 import ProfileTab from './dashboard/ProfileTab.jsx';
 import ContactDeveloper from './dashboard/ContactDeveloper.jsx';
+import SupportDeveloper from './dashboard/SupportDeveloper.jsx';
 import PremiumLogo from '../components/PremiumLogo.jsx';
 
 const SWAL_LIGHT = {
@@ -36,6 +38,7 @@ const NAV_ITEMS = [
   { id: 'idcard', label: 'ID Cards', description: 'Prepare student identity cards', icon: CreditCard },
   { id: 'profile', label: 'School Profile', description: 'Manage school settings', icon: User },
   { id: 'contact', label: 'Contact Developer', description: 'Support and collaboration', icon: Mail },
+  { id: 'support', label: 'Support Me', description: 'Fuel the innovation', icon: Coffee },
 ];
 
 export default function DashboardLayout() {
@@ -102,6 +105,8 @@ export default function DashboardLayout() {
         return <ProfileTab />;
       case 'contact':
         return <ContactDeveloper />;
+      case 'support':
+        return <SupportDeveloper />;
       default:
         return <DashboardHome search={search} />;
     }
