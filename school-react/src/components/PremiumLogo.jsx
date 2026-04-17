@@ -1,4 +1,5 @@
 import React, { useId } from 'react';
+import logoPhoto from '../assets/logo.png';
 
 export default function PremiumLogo({
   size = 'md',
@@ -14,7 +15,7 @@ export default function PremiumLogo({
     <div className={markClass}>
       <div className="premium-logo-mark" aria-hidden="true">
         <img 
-          src="/logo.png" 
+          src={logoPhoto} 
           alt="SchoolPilot" 
           style={{ 
             width: '100%', 
