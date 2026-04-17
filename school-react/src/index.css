@@ -1031,7 +1031,7 @@ input[type='file'] {
   padding: 24px;
   background: rgba(15, 23, 42, 0.18);
   backdrop-filter: blur(10px);
-  z-index: 2000;
+  z-index: 500;
   overflow-y: auto;
 }
 
