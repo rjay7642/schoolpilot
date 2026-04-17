@@ -1,78 +1,79 @@
 import React from 'react';
-import { Mail, Heart, Coffee, MessageSquare, User, Settings, Info } from 'lucide-react';
+import { Mail, MessageSquare, MapPin, Globe, Sparkles, ShieldCheck } from 'lucide-react';
+import jayPhoto from '../../assets/jay.jpeg';
 
 const ContactDeveloper = () => {
     const email = "rjay7642@gmail.com";
-    const upiId = "8521453764@ibl";
-    const amount = "29";
     
-    // UPI deep link for payment
-    const upiLink = `upi://pay?pa=${upiId}&pn=SchoolPilot%20Developer&am=${amount}&cu=INR&tn=Support%20Developer`;
-
-    const handleSupportClick = () => {
-        const phonePeLink = `phonepe://pay?pa=${upiId}&pn=SchoolPilot%20Developer&am=${amount}&cu=INR&tn=Support%20Developer`;
-        window.location.href = phonePeLink;
-        setTimeout(() => {
-            window.location.href = upiLink;
-        }, 1200);
-    };
-
     return (
         <div className="contact-developer-container">
-            <div className="contact-header">
-                <div className="contact-badge">The Architect</div>
-                <h1 className="dev-name">Jay Singh</h1>
-                <h2>Let's build something <span className="text-gradient">extraordinary</span> together.</h2>
-                <p>Have questions, suggestions, or need custom features? I'm here to help you scale your school operations.</p>
+            <div className="premium-dev-header">
+                <div className="dev-photo-wrapper">
+                    <img src={jayPhoto} alt="Jay Singh" className="dev-photo-large" />
+                    <div className="dev-status-badge">
+                        <Sparkles size={14} />
+                        <span>Lead Architect</span>
+                    </div>
+                </div>
+                
+                <h1 className="dev-name-premium">Jay Singh</h1>
+                <p className="dev-tagline">Building the future of institutional management systems with elegance and precision.</p>
+                
+                <div className="dev-stats-row">
+                    <div className="dev-stat-item">
+                        <strong>5+</strong>
+                        <span>Modules</span>
+                    </div>
+                    <div className="dev-divider" />
+                    <div className="dev-stat-item">
+                        <strong>Elite</strong>
+                        <span>Standard</span>
+                    </div>
+                    <div className="dev-divider" />
+                    <div className="dev-stat-item">
+                        <strong>24/7</strong>
+                        <span>Local Support</span>
+                    </div>
+                </div>
             </div>
 
-            <div className="contact-grid">
-                {/* Contact Card */}
-                <div className="contact-card main-card">
-                    <div className="card-icon-wrapper">
-                        <Mail className="card-icon" />
+            <div className="contact-premium-grid">
+                <div className="contact-info-card-premium">
+                    <div className="card-head">
+                        <div className="head-icon">
+                            <Mail size={20} />
+                        </div>
+                        <h3>Direct Channel</h3>
                     </div>
-                    <h2>Get in Touch</h2>
-                    <p>I usually respond within 24 hours. Feel free to drop an email for any queries.</p>
-                    <a href={`mailto:${email}`} className="email-link">
+                    <p>Have a custom requirement or need technical assistance? Reach out directly via email.</p>
+                    <a href={`mailto:${email}`} className="premium-email-btn">
                         {email}
                     </a>
-                    
-                    <div className="social-links">
-                        <button className="social-btn" title="Contact"><User size={20} /></button>
-                        <button className="social-btn" title="Settings"><Settings size={20} /></button>
-                        <button className="social-btn" title="Info"><Info size={20} /></button>
-                    </div>
                 </div>
 
-                {/* Support Card */}
-                <div className="contact-card support-card">
-                    <div className="card-icon-wrapper support-icon">
-                        <Coffee className="card-icon" />
+                <div className="contact-info-card-premium">
+                    <div className="card-head">
+                        <div className="head-icon">
+                            <ShieldCheck size={20} />
+                        </div>
+                        <h3>Security & Privacy</h3>
                     </div>
-                    <h2>Support Development</h2>
-                    <p>If SchoolPilot is helping your institution, consider supporting the developer with a small contribution.</p>
-                    
-                    <div className="price-tag">
-                        <span className="currency">₹</span>
-                        <span className="amount">{amount}</span>
-                    </div>
-
-                    <button className="btn-support" onClick={handleSupportClick}>
-                        <Heart size={18} fill="currentColor" />
-                        <span>Support via PhonePe</span>
-                    </button>
-                    
-                    <div className="upi-info">
-                        <span>UPI ID: {upiId}</span>
+                    <p>Your institutional data stays within your local workspace. I prioritize your privacy and data sovereignty.</p>
+                    <div className="security-badges">
+                        <span className="s-badge">Local-First</span>
+                        <span className="s-badge">Encrypted</span>
                     </div>
                 </div>
             </div>
 
-            <div className="contact-footer">
-                <div className="footer-tag">
-                    <MessageSquare size={16} />
-                    <span>Always open for collaboration</span>
+            <div className="contact-premium-footer">
+                <div className="footer-location">
+                    <MapPin size={16} />
+                    <span>Based in India, serving global institutions</span>
+                </div>
+                <div className="footer-version">
+                    <Globe size={16} />
+                    <span>SchoolPilot Elite V3.0</span>
                 </div>
             </div>
         </div>
@@ -80,3 +81,4 @@ const ContactDeveloper = () => {
 };
 
 export default ContactDeveloper;
+
