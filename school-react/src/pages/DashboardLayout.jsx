@@ -21,6 +21,7 @@ import HistoryTab from './dashboard/HistoryTab.jsx';
 import IDCardGenerator from './dashboard/IDCardGenerator.jsx';
 import ProfileTab from './dashboard/ProfileTab.jsx';
 import ContactDeveloper from './dashboard/ContactDeveloper.jsx';
+import PremiumLogo from '../components/PremiumLogo.jsx';
 
 const SWAL_LIGHT = {
   background: '#ffffff',
@@ -111,19 +112,12 @@ export default function DashboardLayout() {
       <aside className={`sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-header">
           <div className="sidebar-brand">
-            <div className="school-logo-thumb brand-mark">
-              <img
-                src="logo.png"
-                alt="SchoolPilot"
-              />
-            </div>
-
-            {!sidebarCollapsed && (
-              <div className="sidebar-brand-text">
-                <div className="sidebar-brand-name">SchoolPilot</div>
-                <div className="sidebar-brand-sub">School Operations</div>
-              </div>
-            )}
+            <PremiumLogo
+              size="sm"
+              showText={!sidebarCollapsed}
+              subtitle="School Operations"
+              className="sidebar-premium-logo"
+            />
           </div>
 
           <button className="sidebar-toggle" onClick={() => setSidebarCollapsed(!sidebarCollapsed)} type="button">

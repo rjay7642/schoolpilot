@@ -4,6 +4,7 @@ import LandingPage from './pages/LandingPage.jsx';
 import DashboardLayout from './pages/DashboardLayout.jsx';
 import ResultPreviewPage from './pages/ResultPreviewPage.jsx';
 import IDPrintPage from './pages/IDPrintPage.jsx';
+import PremiumLogo from './components/PremiumLogo.jsx';
 
 function getPage() {
   return window.location.hash.replace('#', '').split('?')[0] || '';
@@ -25,7 +26,7 @@ export default function App() {
     return (
       <div className="app-loader">
         <div className="app-loader-card">
-          <div className="app-loader-mark">SP</div>
+          <PremiumLogo size="lg" className="app-loader-logo" />
           <h2>Preparing SchoolPilot</h2>
           <p>Loading your local school workspace and saved records.</p>
         </div>
